@@ -3,20 +3,21 @@ import Mathlib.Data.Finset.Fin
 import Mathlib.Data.Int.Star
 import Mathlib.Data.Multiset.Fintype
 
--- Thank 王镜廷 of PKU for providing the proof of this theorem.
+-- Thank 王镜廷 of PKU for providing the proof of this theorem
 open BigOperators
--- given finite number of finite sets, List.FinInter returns their intersection using an inductive way
+/-- given finite number of finite sets, List.FinInter returns their intersection using an inductive way -/
 def List.FinInter {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α)(L : List β) : Finset α :=
   match L with
   | [] => ∅
   | x :: [] => A x
   | x1 :: x2 :: xs => A x1 ∩ List.FinInter A (x2 :: xs)
--- given finite number of finite sets, List.FinInter returns their union using an inductive way
+
+/-- given finite number of finite sets, List.FinInter returns their union using an inductive way -/
 def List.FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α)(L : List β) : Finset α :=
   match L with
   | [] => ∅
   | x :: xs => A x ∪ (xs.FinUnion A)
--- forall x : α, show that x ∈ (List.FinInter A L) ↔ forall i in L, x ∈ (A i)
+/-- forall x : α, show that x ∈ (List.FinInter A L) ↔ forall i in L, x ∈ (A i) -/
 lemma List.eq_FinInter {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α)(L : List β) (h : L ≠ []) : ∀ x : α, x ∈ L.FinInter A ↔ ∀ i ∈ L, x ∈ A i :=
   match L with
   | [] => (by absurd h; rfl)
@@ -29,7 +30,7 @@ lemma List.eq_FinInter {α β : Type*} [DecidableEq α] [Fintype β] (A : β →
     rw [this]
     simp
   )
--- forall x : α, show that x ∈ (List.FinUnion A L) ↔ there exists an i in L, such that x ∈ (A i)
+/-- forall x : α, show that x ∈ (List.FinUnion A L) ↔ there exists an i in L, such that x ∈ (A i) -/
 lemma List.eq_FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α)(L : List β) : ∀ x : α, x ∈ L.FinUnion A ↔ ∃ i ∈ L, x ∈ A i :=
   match L with
   | [] => (by unfold List.FinUnion; simp)
@@ -42,8 +43,7 @@ lemma List.eq_FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β →
     rw [this]
     simp
   )
--- we say the intersection of several finite sets does not depend on the order in which who and who intersect first
--- Therefore, we introduce the definition of multiset. Given a function A, we define a new function from a multiset to the intersection of finite sets whose index is in the multiset
+/-- we say the intersection of several finite sets does not depend on the order in which who and who intersect first. Therefore, we introduce the definition of multiset. Given a function A, we define a new function from a multiset to the intersection of finite sets whose index is in the multiset -/
 def Multiset.FinInter {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) : Multiset β → Finset α :=
   Quot.lift (α := List β) (β := Finset α) (List.FinInter A) (by
     intro a b hab
@@ -63,7 +63,7 @@ def Multiset.FinInter {α β : Type*} [DecidableEq α] [Fintype β] (A : β → 
       rw [List.eq_FinInter _ _ this]
       simp_rw [List.Perm.mem_iff hab]
     )
--- Same as above, we define a new function from a multiset to the union of finite sets whose index is in the multiset
+/-- Same as above, we define a new function from a multiset to the union of finite sets whose index is in the multiset -/
 def Multiset.FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) : Multiset β → Finset α :=
   Quot.lift (α := List β) (List.FinUnion A) (by
     intro a b hab
@@ -73,77 +73,82 @@ def Multiset.FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β → 
     change a.Perm b at hab
     simp_rw [List.Perm.mem_iff hab]
   )
--- We prove the lemma 'List.eq_FinInter' to be still true in the multiset case
+/-- We prove the lemma 'List.eq_FinInter' to be still true in the multiset case -/
 lemma Multiset.eq_FinInter {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) (M : Multiset β) (h : M ≠ ∅) : ∀ x : α, x ∈ M.FinInter A ↔ ∀ m ∈ M, x ∈ A m := by
   intro x
   have : M.FinInter A = M.toList.FinInter A := by
-    have : M.toList = M := by
-      simp? says simp only [coe_toList]
     unfold Multiset.FinInter
-    rw [← this]
-    apply Finset.val_inj.mp
-    set f := List.FinInter A with hf
-    set L := M.toList
-    simp_rw [← hf]
-    simp? says simp only [lift_coe, Finset.val_inj]
-    congr 1
-    rw [this]
+    have : M.toList = M := by simp
+    nth_rw 1 [← this]
+    apply lift_coe
+    intro a b hab
+    change a.Perm b at hab
+    by_cases h : a = []
+    · simp [h]
+      simp [h] at hab
+      simp [hab]
+    · have : ¬ b = [] := by
+        by_contra h'
+        simp [h'] at hab
+        contradiction
+      ext x
+      rw [List.eq_FinInter _ _ h]
+      rw [List.eq_FinInter _ _ this]
+      simp_rw [List.Perm.mem_iff hab]
   rw [this]
   rw [List.eq_FinInter]
   · simp
   · simp
     exact h
-
+/-- We prove the lemma 'List.eq_FinUnion' to be still true in the multiset case -/
 lemma Multiset.eq_FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) (M : Multiset β) : ∀ x : α, x ∈ M.FinUnion A ↔ ∃ m ∈ M, x ∈ A m := by
   intro x
   have : M.FinUnion A = M.toList.FinUnion A := by
-    have : M.toList = M := by
-      simp? says simp only [coe_toList]
     unfold Multiset.FinUnion
-    rw [← this]
-    apply Finset.val_inj.mp
-    set f := List.FinUnion A with hf
-    set L := M.toList
-    simp_rw [← hf]
-    simp? says simp only [lift_coe, Finset.val_inj]
-    congr 1
-    rw [this]
+    have : M.toList = M := by simp
+    nth_rw 1 [← this]
+    apply lift_coe
+    intro a b hab
+    change a.Perm b at hab
+    ext x
+    rw [List.eq_FinUnion, List.eq_FinUnion]
+    simp_rw [List.Perm.mem_iff hab]
   rw [this]
   rw [List.eq_FinUnion]
-  simp? says simp only [mem_toList]
-
-def FinInter {α β : Type*} [DecidableEq α] [Fintype β] [Nonempty β] (A : β → Finset α) : Finset α := Multiset.FinInter A (Finset.univ).1
-
-def FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) : Finset α := Multiset.FinUnion A (Finset.univ).1
-
-lemma eq_FinInter {α β : Type*} [DecidableEq α] [Fintype β] [h : Nonempty β] (A : β → Finset α) :
-  FinInter A = ⋂ (i : β), (A i : Set α) := by
-  unfold FinInter
+  simp
+/-- Given a finite index set (@Finset.univ β _), we define FinInter₀ to be the intersection of all finite sets whose index's type is β -/
+def FinInter₀ {α β : Type*} [DecidableEq α] [Fintype β] [Nonempty β] (A : β → Finset α) : Finset α := Multiset.FinInter A (Finset.univ).1
+/-- Given a finite index set (@Finset.univ β _), we define FinUnion₀ to be the union of all finite sets whose index's type is β -/
+def FinUnion₀ {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) : Finset α := Multiset.FinUnion A (Finset.univ).1
+/-- Same as above, we prove the lemma 'List.eq_FinInter' to be still true in the whole case -/
+lemma eq_FinInter₀ {α β : Type*} [DecidableEq α] [Fintype β] [h : Nonempty β] (A : β → Finset α) :
+  FinInter₀ A = ⋂ (i : β), (A i : Set α) := by
+  unfold FinInter₀
   ext x
-  simp? says simp only [Finset.mem_coe, Set.mem_iInter]
+  simp
   rw [Multiset.eq_FinInter]
-  simp? says simp only [Finset.mem_val, Finset.mem_univ, true_implies]
-  simp? says simp only [Multiset.empty_eq_zero, ne_eq, Finset.val_eq_zero]
-  apply Finset.nonempty_iff_ne_empty.mp
-  exact Finset.univ_nonempty_iff.mpr h
+  · simp
+  · simp
+    apply Finset.nonempty_iff_ne_empty.mp
+    exact Finset.univ_nonempty_iff.mpr h
 
-lemma eq_FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) :
-  FinUnion A = ⋃ (i : β), (A i : Set α) := by
-  unfold FinUnion
+lemma eq_FinUnion₀ {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) :
+  FinUnion₀ A = ⋃ (i : β), (A i : Set α) := by
+  unfold FinUnion₀
   ext x
-  simp? says simp only [Finset.mem_coe, Set.mem_iUnion]
+  simp
   rw [Multiset.eq_FinUnion]
-  simp? says simp only [Finset.mem_val, Finset.mem_univ, true_and]
+  simp
 
 instance FinInter_Fin {α β : Type*} [DecidableEq α] [Fintype β] [Nonempty β] (A : β → Finset α) :
   Fintype (⋂ (i : β), (A i : Set α)) := by
-  rw [← eq_FinInter]
-  exact FinsetCoe.fintype (FinInter fun i ↦ A i)
+  rw [← eq_FinInter₀]
+  exact FinsetCoe.fintype (FinInter₀ fun i ↦ A i)
 
 instance FinUnion_Fin {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) :
   Fintype (⋃ (i : β), (A i : Set α)) := by
-  rw [← eq_FinUnion]
-  exact FinsetCoe.fintype (FinUnion fun i ↦ A i)
+  rw [← eq_FinUnion₀]
+  exact FinsetCoe.fintype (FinUnion₀ fun i ↦ A i)
 
 def Finset.powerset₀ {α : Type*} (A : Finset α) : Finset (Finset α) :=
   Finset.filter (fun S ↦ (Fintype.card S ≠ 0)) A.powerset
