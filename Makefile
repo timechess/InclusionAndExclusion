@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := all
 
-PROJECT = DemoProject
+PROJECT = InclusionAndExclusion
 
 .PHONY: all build blueprint blueprint-dev analyze serve update
 
