@@ -131,7 +131,7 @@ lemma eq_FinInter₀ {α β : Type*} [DecidableEq α] [Fintype β] [h : Nonempty
   · simp
     apply Finset.nonempty_iff_ne_empty.mp
     exact Finset.univ_nonempty_iff.mpr h
-
+/-- Same as above, we prove the lemma 'List.eq_FinUnion' to be still true in the whole case -/
 lemma eq_FinUnion₀ {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) :
   FinUnion₀ A = ⋃ (i : β), (A i : Set α) := by
   unfold FinUnion₀
@@ -139,82 +139,77 @@ lemma eq_FinUnion₀ {α β : Type*} [DecidableEq α] [Fintype β] (A : β → F
   simp
   rw [Multiset.eq_FinUnion]
   simp
-
+/-- We show that the intersection of finite number of finite sets is still a finite set -/
 instance FinInter_Fin {α β : Type*} [DecidableEq α] [Fintype β] [Nonempty β] (A : β → Finset α) :
   Fintype (⋂ (i : β), (A i : Set α)) := by
   rw [← eq_FinInter₀]
   exact FinsetCoe.fintype (FinInter₀ fun i ↦ A i)
-
+/-- We show that the union of finite number of finite sets is still a finite set -/
 instance FinUnion_Fin {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) :
   Fintype (⋃ (i : β), (A i : Set α)) := by
   rw [← eq_FinUnion₀]
   exact FinsetCoe.fintype (FinUnion₀ fun i ↦ A i)
-
+/-- We define all the nonempty subsets of A to be A.powerset₀ -/
 def Finset.powerset₀ {α : Type*} (A : Finset α) : Finset (Finset α) :=
   Finset.filter (fun S ↦ (Fintype.card S ≠ 0)) A.powerset
-
+/-- We show that every element whose type is A.powerset₀ is nonempty -/
 instance powerset₀_nonempty {α : Type*} {A : Finset α} (S : A.powerset₀) : Nonempty S := by
-  have : Fintype.card S.1 ≠ 0 := by
-    unfold Finset.powerset₀ at *
-    have : S.1 ∈ Finset.filter (fun S ↦ Fintype.card { x // x ∈ S } ≠ 0) A.powerset := S.2
-    simp only [ne_eq, Fintype.card_coe, Finset.card_eq_zero, Finset.mem_filter,
-      Finset.mem_powerset] at this
-    simp only [ne_eq, Fintype.card_coe, Finset.card_eq_zero]
-    exact this.2
   apply Finset.Nonempty.coe_sort
-  simp only [Fintype.card_coe, ne_eq, Finset.card_eq_zero] at this
-  exact Finset.nonempty_iff_ne_empty.mpr this
-
+  apply Finset.nonempty_iff_ne_empty.mpr
+  unfold Finset.powerset₀ at S
+  have := S.2
+  simp at this
+  exact this.2
+/-- We assign a value to a proposition. If the proposition holds, we assign a value of 1; otherwise, we assign a value of 0 -/
 def toInt (P : Prop) [Decidable P] : ℤ := if P then 1 else 0
-
+/-- The value of P and Q both holds is equal to the value of P times the value of Q -/
 lemma toInt_and {P Q : Prop} [Decidable P] [Decidable Q] : toInt (P ∧ Q) = toInt P * toInt Q := by
   unfold toInt
   by_cases h : P
   · by_cases h' : Q
-    · simp only [h, h', and_self, ↓reduceIte, mul_one]
-    · simp only [h, h', and_false, ↓reduceIte, mul_zero]
+    · simp only [h, h', and_self]
+      rfl
+    · simp only [h, h', and_false]
+      rfl
   · by_cases h' : Q
-    · simp only [h, h', and_true, ↓reduceIte, mul_one]
-    · simp only [h, h', and_self, ↓reduceIte, mul_zero]
-
+    · simp only [h, h', and_true]
+      rfl
+    · simp only [h, h', and_self]
+      rfl
+/-- The value of ¬ P is equal to one sub the value of P -/
 lemma toInt_not (P : Prop) [Decidable P] : toInt (¬ P) = 1 - toInt P := by
   unfold toInt
   by_cases h : P
-  · simp only [h, not_true_eq_false, ↓reduceIte, sub_self]
-  · simp only [h, not_false_eq_true, ↓reduceIte, sub_zero]
-
+  · simp only [h, not_true_eq_false]
+    rfl
+  · simp only [h, not_false_eq_true]
+    rfl
+/-- We define a function that if x ∈ A then returns 1, else returns 0 -/
 def char_fun {α : Type*} [DecidableEq α] (A : Finset α) (x : α) : ℤ := toInt (x ∈ A)
-
-lemma card_eq_sum_char_fun {α : Type*} [DecidableEq α] {A B : Finset α} (h : B ⊆ A) :
-  Fintype.card B = Finset.sum A (char_fun B) := by
-  have : Fintype.card B = ∑ _ : B, (1 : ℤ) := by
-    trans ∑ _ : B, (1 : ℕ)
-    norm_cast
-    rw [Fintype.card_eq_sum_ones]
-    norm_cast
-  rw [this]
-  unfold char_fun toInt
-  simp only [Finset.univ_eq_attach, Finset.sum_const, Finset.card_attach, nsmul_eq_mul, mul_one,Finset.sum_ite_mem, Nat.cast_inj]
-  congr 1
-  symm
-  rw [Finset.inter_eq_right]
-  exact h
-
-lemma char_fun_inter {α : Type*} [DecidableEq α] (A B : Finset α) (x : α) :
-  char_fun (A ∩ B) x = (char_fun A x) * (char_fun B x) := by
-    show toInt (x ∈ (A ∩ B)) = toInt (x ∈ A) * toInt (x ∈ B)
-    simp_rw [← Finset.mem_coe, Finset.coe_inter]
-    rw [← toInt_and]; congr 1
-
-lemma char_fun_union {α : Type*} [DecidableEq α] (A B : Finset α) (x : α) :
-  char_fun (A ∪ B) x = 1 - (1 - char_fun A x) * (1 - char_fun B x) := by
-    show toInt (x ∈ A ∪ B) = 1 - (1 - toInt (x ∈ A)) * (1 - toInt (x ∈ B))
-    simp_rw [← Finset.mem_coe, Finset.coe_union]
-    rw [← toInt_not, ← toInt_not, ← toInt_and, ← toInt_not]; congr 1
-    simp only [Set.mem_union, Finset.mem_coe, not_and, Decidable.not_not, eq_iff_iff]
-    tauto
-
-lemma char_fun_FinInter {α β : Type*} [DecidableEq α] [Fintype β] [Nonempty β] (A : β → Finset α) (x : α) : char_fun (FinInter A) x = ∏ (i : β), (char_fun (A i) x) := by
+/-- Here we introduce a way to calculate the number of elements in B which is a subset of A -/
+lemma card_eq_sum_char_fun {α : Type*} [DecidableEq α] {A B : Finset α} (h : B ⊆ A) : Fintype.card B = Finset.sum A (char_fun B) := by
+  trans ∑ _ : B, (1 : ℕ)
+  · simp
+  · unfold char_fun
+    unfold toInt
+    simp
+    rw [Finset.inter_eq_right.mpr h]
+/-- We claim that x ∈ (A ∩ B) is equal to x ∈ A and x ∈ B both holds -/
+lemma char_fun_inter {α : Type*} [DecidableEq α] (A B : Finset α) (x : α) : char_fun (A ∩ B) x = (char_fun A x) * (char_fun B x) := by
+    unfold char_fun
+    rw [← toInt_and]
+    simp
+/-- We claim that x ∈ (A ∪ B) is equal to at least one of x ∈ A and x ∈ B holds  -/
+lemma char_fun_union {α : Type*} [DecidableEq α] (A B : Finset α) (x : α) : char_fun (A ∪ B) x = 1 - (1 - char_fun A x) * (1 - char_fun B x) := by
+    unfold char_fun
+    rw [← toInt_not]
+    rw [← toInt_not]
+    rw [← toInt_and]
+    rw [← toInt_not]
+    simp
+    simp_rw [Decidable.or_iff_not_imp_left]
+/-- We claim that x ∈ (∩ i (A i)) is equal to forall i, x ∈ (A i) holds -/
+lemma char_fun_FinInter {α β : Type*} [DecidableEq α] [Fintype β] [Nonempty β] (A : β → Finset α) (x : α) : char_fun (FinInter₀ A) x = ∏ (i : β), (char_fun (A i) x) := by
   by_cases h : ∃ (i : β), char_fun (A i) x = 0
   · obtain ⟨y, hy⟩ := h
     have : ∏ i : β, char_fun (A i) x = 0 := by
@@ -223,29 +218,28 @@ lemma char_fun_FinInter {α β : Type*} [DecidableEq α] [Fintype β] [Nonempty 
       · rw [hy]
     rw [this]
     unfold char_fun toInt
-    simp? says simp only [ite_eq_right_iff, one_ne_zero, imp_false]
-    rw [← Finset.mem_coe, eq_FinInter]
-    simp? says simp only [Set.mem_iInter, Finset.mem_coe, not_forall]
+    simp
+    rw [← Finset.mem_coe, eq_FinInter₀]
+    simp
     unfold char_fun toInt at hy
-    simp? at hy says simp only [ite_eq_right_iff, one_ne_zero, imp_false] at hy
+    simp at hy
     exact ⟨y, hy⟩
   · unfold char_fun toInt at h
-    simp? at h says
-      simp only [ite_eq_right_iff, one_ne_zero, imp_false, not_exists, Decidable.not_not] at h
+    simp at h
     have h' : ∀ (y : β), char_fun (A y) x = 1 := by
       unfold char_fun toInt
       intro y
-      simp? [h y] says simp only [h y, ↓reduceIte]
+      simp [h y]
     simp_rw [h']
-    simp? says simp only [Finset.prod_const_one]
+    simp
     unfold char_fun toInt
-    simp? says simp only [ite_eq_left_iff, zero_ne_one, imp_false, Decidable.not_not]
-    rw [← Finset.mem_coe, eq_FinInter]
-    simp? says simp only [Set.mem_iInter, Finset.mem_coe]
+    simp
+    rw [← Finset.mem_coe, eq_FinInter₀]
+    simp
     exact h
 
 lemma char_fun_FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) (x : α) :
-  char_fun (FinUnion A) x = 1 - ∏ (i : β), (1 - char_fun (A i) x) := by
+  char_fun (FinUnion₀ A) x = 1 - ∏ (i : β), (1 - char_fun (A i) x) := by
   by_cases h : ∃ (i : β), char_fun (A i) x = 1
   · obtain ⟨y, hy⟩ := h
     have : ∏ i : β, (1 - char_fun (A i) x) = 0 := by
@@ -255,7 +249,7 @@ lemma char_fun_FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β �
     rw [this, sub_zero]
     unfold char_fun toInt
     simp? says simp only [ite_eq_left_iff, zero_ne_one, imp_false, Decidable.not_not]
-    rw [← Finset.mem_coe, eq_FinUnion]
+    rw [← Finset.mem_coe, eq_FinUnion₀]
     simp? says simp only [Set.mem_iUnion, Finset.mem_coe]
     unfold char_fun toInt at hy
     simp? at hy says simp only [ite_eq_left_iff, zero_ne_one, imp_false, Decidable.not_not] at hy
@@ -271,7 +265,7 @@ lemma char_fun_FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β �
     simp? says simp only [sub_zero, Finset.prod_const_one, sub_self]
     unfold char_fun toInt
     simp? says simp only [ite_eq_right_iff, one_ne_zero, imp_false]
-    rw [← Finset.mem_coe, eq_FinUnion]
+    rw [← Finset.mem_coe, eq_FinUnion₀]
     simp? says simp only [Set.mem_iUnion, Finset.mem_coe, not_exists]
     exact h
 
@@ -281,14 +275,14 @@ lemma card_eq {α : Type*} (A : Finset α) (B : Set α) [Fintype B] (h : A = B) 
   simp only [Finset.coe_sort_coe, Fintype.card_coe]
 
 lemma card_eq_FinInter {α β : Type*} [DecidableEq α] [Fintype β] [Nonempty β] (A : β → Finset α) :
-  Fintype.card (⋂ (i : β), (A i : Set α)) = Fintype.card (FinInter A) := by
-    exact card_eq _ _ (eq_FinInter A)
+  Fintype.card (⋂ (i : β), (A i : Set α)) = Fintype.card (FinInter₀ A) := by
+    exact card_eq _ _ (eq_FinInter₀ A)
 
 lemma card_eq_FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) :
-  Fintype.card (⋃ (i : β), (A i : Set α)) = Fintype.card (FinUnion A) := by
-    exact card_eq _ _ (eq_FinUnion A)
+  Fintype.card (⋃ (i : β), (A i : Set α)) = Fintype.card (FinUnion₀ A) := by
+    exact card_eq _ _ (eq_FinUnion₀ A)
 
-lemma mul_expand''' (n : ℕ) (g : ℕ → ℤ) : ∏ i ∈ Finset.range n, (1 - g i) = ∑ S ∈ (Finset.range n).powerset, (-1) ^ (Fintype.card S) * ∏ j : S, g j := by
+lemma mul_expand₃ (n : ℕ) (g : ℕ → ℤ) : ∏ i ∈ Finset.range n, (1 - g i) = ∑ S ∈ (Finset.range n).powerset, (-1) ^ (Fintype.card S) * ∏ j : S, g j := by
   induction' n with n ih
   · simp? says
       simp only [Finset.range_zero, Finset.prod_empty, Finset.powerset_empty, Int.reduceNeg, Fintype.card_coe, Finset.univ_eq_attach, Finset.sum_singleton, Finset.card_empty, pow_zero, Finset.attach_empty, mul_one]
@@ -349,7 +343,7 @@ lemma mul_expand''' (n : ℕ) (g : ℕ → ℤ) : ∏ i ∈ Finset.range n, (1 -
     · rw [Multiset.sum_map_mul_left]}
     rw [← ih, mul_sub, mul_one, neg_mul, sub_eq_add_neg, mul_comm]
 
-lemma mul_expand'' (n : ℕ) (g : ℕ → ℤ) : 1 - ∏ i ∈ Finset.range n, (1 - g i) = ∑ S ∈ (Finset.range n).powerset₀, (-1) ^ (Fintype.card S + 1) * ∏ j : S, g j := by
+lemma mul_expand₂ (n : ℕ) (g : ℕ → ℤ) : 1 - ∏ i ∈ Finset.range n, (1 - g i) = ∑ S ∈ (Finset.range n).powerset₀, (-1) ^ (Fintype.card S + 1) * ∏ j : S, g j := by
   have : ∑ S ∈ (Finset.range n).powerset₀, (-1) ^ (Fintype.card S + 1) * ∏ j : S, g j = (∑ S ∈ (Finset.range n).powerset, (-1) ^ (Fintype.card S + 1) * ∏ j : S, g j) + 1 := by
     have : (fun (S : Finset ℕ) ↦ (-1) ^ (Fintype.card S + 1) * ∏ j : S, g j) = (fun (S : Finset ℕ) ↦ if S = ∅ then (-1) ^ (Fintype.card S + 1) * ∏ j : S, g j else (-1) ^ (Fintype.card S + 1) * ∏ j : S, g j) := by
       simp? says
@@ -375,12 +369,12 @@ lemma mul_expand'' (n : ℕ) (g : ℕ → ℤ) : 1 - ∏ i ∈ Finset.range n, (
     rw [this]
     simp? says
       simp only [Int.reduceNeg, Finset.sum_singleton, Finset.card_empty, zero_add, pow_one, Finset.attach_empty, Finset.prod_empty, mul_one, add_left_neg]
-  rw [this, sub_eq_add_neg, Int.neg_eq_neg_one_mul, mul_expand''' n g, Finset.mul_sum, add_comm 1 _]
+  rw [this, sub_eq_add_neg, Int.neg_eq_neg_one_mul, mul_expand₃ n g, Finset.mul_sum, add_comm 1 _]
   congr 2
   ext S
   rw [← mul_assoc, pow_succ']
 
-lemma mul_expand' (n : ℕ) (g : ℕ → ℤ) :
+lemma mul_expand₁ (n : ℕ) (g : ℕ → ℤ) :
   1 - ∏ (i : Fin n), (1 - g i) =
     ∑ (S : Finset.powerset₀ (Finset.univ (α := Fin n))),
       (-1) ^ (Fintype.card S + 1) * (∏ (j : S), g j) := by
@@ -450,7 +444,7 @@ lemma mul_expand' (n : ℕ) (g : ℕ → ℤ) :
     apply Finset.sum_subtype
     simp? says simp only [implies_true]
   rw [hl, hr, hr']
-  exact mul_expand'' n g
+  exact mul_expand₂ n g
 
 lemma mul_expand (n : ℕ) (g : (Fin n) → ℤ) :
   1 - ∏ (i : Fin n), (1 - g i) =
@@ -461,20 +455,20 @@ lemma mul_expand (n : ℕ) (g : (Fin n) → ℤ) :
           show (fun x ↦ if h : x < n then g ⟨x, h⟩ else 0) x = g x
           simp
         simp_rw [← this]
-        exact mul_expand' n g'
+        exact mul_expand₁ n g'
 
 theorem Principle_of_Inclusion_Exclusion {α : Type*} [DecidableEq α] (n : ℕ) (A : (Fin n) → Finset α) :
   (Fintype.card (⋃ (i : Fin n), ((A i) : Set α)))
     = Finset.sum
       (Finset.univ (α := (Finset.powerset₀ (Finset.univ (α := Fin n)))))
         (fun S ↦ (-1 : ℤ) ^ (Fintype.card S + 1) * Fintype.card (⋂ (i : S.1), ((A i) : Set α))) := by
-  set U : Finset α := FinUnion A
+  set U : Finset α := FinUnion₀ A
   rw [card_eq_FinUnion]
   simp_rw [card_eq_FinInter]
-  have hU1 : FinUnion A ⊆ U := by rfl
+  have hU1 : FinUnion₀ A ⊆ U := by rfl
   have hU2 (S : (Finset.powerset₀ (Finset.univ (α := Fin n)))) :
-    @FinInter α S _ _ _ (fun i ↦ A i) ⊆ U := by
-    rw [← Finset.coe_subset, eq_FinInter, eq_FinUnion]
+    @FinInter₀ α S _ _ _ (fun i ↦ A i) ⊆ U := by
+    rw [← Finset.coe_subset, eq_FinInter₀, eq_FinUnion₀]
     intro x hx
     let s : S.1 := Classical.choice (by infer_instance)
     simp? says simp only [Set.mem_iInter, Finset.mem_coe, Subtype.forall] at hx
