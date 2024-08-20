@@ -211,173 +211,140 @@ lemma char_fun_union {α : Type*} [DecidableEq α] (A B : Finset α) (x : α) : 
 /-- We claim that x ∈ (∩ i (A i)) is equal to forall i, x ∈ (A i) holds -/
 lemma char_fun_FinInter {α β : Type*} [DecidableEq α] [Fintype β] [Nonempty β] (A : β → Finset α) (x : α) : char_fun (FinInter₀ A) x = ∏ (i : β), (char_fun (A i) x) := by
   by_cases h : ∃ (i : β), char_fun (A i) x = 0
-  · obtain ⟨y, hy⟩ := h
-    have : ∏ i : β, char_fun (A i) x = 0 := by
-      apply Finset.prod_eq_zero
-      · exact Finset.mem_univ y
-      · rw [hy]
-    rw [this]
-    unfold char_fun toInt
-    simp
-    rw [← Finset.mem_coe, eq_FinInter₀]
-    simp
-    unfold char_fun toInt at hy
-    simp at hy
-    exact ⟨y, hy⟩
-  · unfold char_fun toInt at h
-    simp at h
-    have h' : ∀ (y : β), char_fun (A y) x = 1 := by
-      unfold char_fun toInt
-      intro y
-      simp [h y]
-    simp_rw [h']
-    simp
-    unfold char_fun toInt
-    simp
-    rw [← Finset.mem_coe, eq_FinInter₀]
-    simp
-    exact h
-
+  · rcases h with ⟨j,hj⟩
+    trans 0
+    · unfold char_fun toInt at *
+      simp at *
+      by_contra h
+      have h : x ∈ ((FinInter₀ A) : Set α) := by simp [h]
+      rw [eq_FinInter₀ A] at h
+      have := Finset.mem_coe.mp (Set.mem_iInter.mp h j)
+      exact hj this
+    · symm
+      apply Finset.prod_eq_zero (Finset.mem_univ j) hj
+  · unfold char_fun toInt at *
+    simp at *
+    simp [h]
+    apply Finset.mem_coe.mp
+    rw [eq_FinInter₀]
+    apply Set.mem_iInter.mpr
+    intro j
+    exact h j
+/-- We claim that x ∈ (∪ i (A i)) is equal to at least one of (i : β, x ∈ (A i)) holds -/
 lemma char_fun_FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) (x : α) :
   char_fun (FinUnion₀ A) x = 1 - ∏ (i : β), (1 - char_fun (A i) x) := by
   by_cases h : ∃ (i : β), char_fun (A i) x = 1
-  · obtain ⟨y, hy⟩ := h
-    have : ∏ i : β, (1 - char_fun (A i) x) = 0 := by
-      apply Finset.prod_eq_zero
-      · exact Finset.mem_univ y
-      · rw [hy, sub_self]
-    rw [this, sub_zero]
-    unfold char_fun toInt
-    simp? says simp only [ite_eq_left_iff, zero_ne_one, imp_false, Decidable.not_not]
-    rw [← Finset.mem_coe, eq_FinUnion₀]
-    simp? says simp only [Set.mem_iUnion, Finset.mem_coe]
-    unfold char_fun toInt at hy
-    simp? at hy says simp only [ite_eq_left_iff, zero_ne_one, imp_false, Decidable.not_not] at hy
-    exact ⟨y, hy⟩
-  · unfold char_fun toInt at h
-    simp? at h says
-      simp only [ite_eq_left_iff, zero_ne_one, imp_false, Decidable.not_not, not_exists] at h
-    have h' : ∀ (y : β), char_fun (A y) x = 0 := by
-      unfold char_fun toInt
-      intro y
-      simp? [h y] says simp only [h y, ↓reduceIte]
-    simp_rw [h']
-    simp? says simp only [sub_zero, Finset.prod_const_one, sub_self]
-    unfold char_fun toInt
-    simp? says simp only [ite_eq_right_iff, one_ne_zero, imp_false]
-    rw [← Finset.mem_coe, eq_FinUnion₀]
-    simp? says simp only [Set.mem_iUnion, Finset.mem_coe, not_exists]
-    exact h
-
-lemma card_eq {α : Type*} (A : Finset α) (B : Set α) [Fintype B] (h : A = B) :
-  Fintype.card B = Fintype.card A := by
+  · trans 1
+    · unfold char_fun toInt at *
+      simp at *
+      apply Finset.mem_coe.mp
+      rw [eq_FinUnion₀]
+      apply Set.mem_iUnion.mpr h
+    · have : ∏ i : β, (1 - char_fun (A i) x) = 0 := by
+        rcases h with ⟨j,hj⟩
+        apply Finset.prod_eq_zero (Finset.mem_univ j) (by simp [hj])
+      rw [this]
+      norm_num
+  · unfold char_fun toInt at *
+    simp at *
+    simp [h]
+    by_contra h'
+    have h' := Finset.mem_coe.mpr h'
+    simp_rw [eq_FinUnion₀] at h'
+    have h' := Set.mem_iUnion.mp h'
+    rcases h' with ⟨j,hj⟩
+    exact h j hj
+/-- It's obvious that if a Finset A equals to a Set B in the view of Set, then they have the same number of elements. Since we use this lemma a lot in below proof, we put it here to be an independent lemma -/
+lemma card_eq {α : Type*} (A : Finset α) (B : Set α) [Fintype B] (h : A = B) : Fintype.card B = Fintype.card A := by
   simp_rw [← h]
-  simp only [Finset.coe_sort_coe, Fintype.card_coe]
-
-lemma card_eq_FinInter {α β : Type*} [DecidableEq α] [Fintype β] [Nonempty β] (A : β → Finset α) :
-  Fintype.card (⋂ (i : β), (A i : Set α)) = Fintype.card (FinInter₀ A) := by
-    exact card_eq _ _ (eq_FinInter₀ A)
-
-lemma card_eq_FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) :
-  Fintype.card (⋃ (i : β), (A i : Set α)) = Fintype.card (FinUnion₀ A) := by
-    exact card_eq _ _ (eq_FinUnion₀ A)
-
+  simp
+/-- We derive it from eq_FinInter₀ and card_eq -/
+lemma card_eq_FinInter {α β : Type*} [DecidableEq α] [Fintype β] [Nonempty β] (A : β → Finset α) : Fintype.card (⋂ (i : β), (A i : Set α)) = Fintype.card (FinInter₀ A) := card_eq _ _ (eq_FinInter₀ A)
+/-- We derive it from eq_FinUnion₀ and card_eq -/
+lemma card_eq_FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) : Fintype.card (⋃ (i : β), (A i : Set α)) = Fintype.card (FinUnion₀ A) := card_eq _ _ (eq_FinUnion₀ A)
+/-- Here we formalize the polynomial expansion of (∏ i (1 - g i)) -/
 lemma mul_expand₃ (n : ℕ) (g : ℕ → ℤ) : ∏ i ∈ Finset.range n, (1 - g i) = ∑ S ∈ (Finset.range n).powerset, (-1) ^ (Fintype.card S) * ∏ j : S, g j := by
   induction' n with n ih
-  · simp? says
-      simp only [Finset.range_zero, Finset.prod_empty, Finset.powerset_empty, Int.reduceNeg, Fintype.card_coe, Finset.univ_eq_attach, Finset.sum_singleton, Finset.card_empty, pow_zero, Finset.attach_empty, mul_one]
+  · simp
   · rw [Finset.prod_range_succ]
     have (n : ℕ) : (∑ S ∈ (Finset.range n).powerset, (-1) ^ (Fintype.card S) * ∏ j : S, g j) = Multiset.sum (Multiset.map (fun (S : Multiset ℕ) ↦ (-1) ^ (Fintype.card S) * Multiset.prod (Multiset.map g S)) (Multiset.range n).powerset) := by
-      unfold Finset.powerset
-      unfold Finset.sum
+      unfold Finset.powerset Finset.sum
       simp
       congr 1
       apply Multiset.map_eq_map_of_bij_of_nodup
-      · apply Multiset.Nodup.pmap
-        · intro a b b1 hb1 heq
-          show (@Finset.mk ℕ a b).val = (@Finset.mk ℕ b1 hb1).val
-          rw [heq]
-        · apply Multiset.Nodup.powerset
-          exact Multiset.nodup_range n
-      · apply Multiset.Nodup.powerset
-        exact Multiset.nodup_range n
+      · apply (Multiset.Nodup.pmap (by intro a ha b hb h; show (@Finset.mk ℕ a ha).val = (@Finset.mk ℕ b hb).val; rw [h]) (Multiset.Nodup.powerset (Multiset.nodup_range n)))
+      · apply Multiset.Nodup.powerset (Multiset.nodup_range n)
       pick_goal 5
-      · use fun x _ ↦ x.1
+      · use fun a _ ↦ a.1
       · intro a ha
         simp at ha
-        obtain ⟨a1, ha1, heq⟩ := ha
-        apply Multiset.mem_powerset.mpr
-        rw [← heq]
-        exact ha1
-      · intro _ _ _ _ heq
-        exact Finset.val_inj.mp heq
-      · intro b hb
-        simp at hb
-        have : b.Nodup := by
-          exact Multiset.nodup_of_le hb (Multiset.nodup_range n)
-        use Finset.mk b this
+        rcases ha with ⟨a₁,h,ha₁⟩
         simp
-        exact hb
+        exact le_of_eq_of_le (congrArg Finset.val (id (Eq.symm ha₁))) h
+      · intro a₁ _ a₂ _ h
+        apply Finset.val_inj.mp h
+      · intro b h
+        have hb := Multiset.nodup_of_le (Multiset.mem_powerset.mp h) (Multiset.nodup_range n)
+        use (@Finset.mk ℕ b hb)
+        simp
+        exact Multiset.mem_powerset.mp h
       · intro a ha
-        simp at ha
-        obtain ⟨a1, ha1, heq⟩ := ha
         simp
-        rw [← heq]
-        apply Finset.prod_attach
+        exact Finset.prod_attach a g
     rw [this] at *
-    simp only [Multiset.range_succ, Multiset.powerset_cons, Int.reduceNeg, Multiset.card_coe,
-      Multiset.map_add, Multiset.map_map, Function.comp_apply, Multiset.card_cons, Multiset.map_cons, Multiset.prod_cons, Multiset.sum_add]
-    simp only [Int.reduceNeg, Multiset.card_coe] at ih
-    conv => {
-    rhs
-    congr
-    · skip
-    · congr
-      · congr
-        ext x
-        · rw [← mul_assoc, pow_succ, mul_assoc _ (-1) _, mul_comm _ (-1 * g n), ← Int.neg_eq_neg_one_mul, mul_assoc]}
-    conv => {
-    rhs
-    congr
-    · skip
-    · rw [Multiset.sum_map_mul_left]}
-    rw [← ih, mul_sub, mul_one, neg_mul, sub_eq_add_neg, mul_comm]
-
+    simp at *
+    conv =>
+      enter [2, 2, 1, 1]
+      ext x
+      rw [← mul_assoc, pow_succ, mul_assoc _ (-1), mul_comm _ (-1 * g n), ← Int.neg_eq_neg_one_mul, mul_assoc]
+    conv =>
+      enter [2, 2]
+      rw [Multiset.sum_map_mul_left]
+    rw [← ih]
+    conv =>
+      enter [2, 1]
+      rw [← one_mul (∏ i ∈ Finset.range n, (1 - g i))]
+    rw [← add_mul]
+    rw [sub_eq_add_neg]
+    rw [mul_comm]
+/-- Same as above, here we formalize the polynomial expansion of (1 - ∏ i (1 - g i)) -/
 lemma mul_expand₂ (n : ℕ) (g : ℕ → ℤ) : 1 - ∏ i ∈ Finset.range n, (1 - g i) = ∑ S ∈ (Finset.range n).powerset₀, (-1) ^ (Fintype.card S + 1) * ∏ j : S, g j := by
   have : ∑ S ∈ (Finset.range n).powerset₀, (-1) ^ (Fintype.card S + 1) * ∏ j : S, g j = (∑ S ∈ (Finset.range n).powerset, (-1) ^ (Fintype.card S + 1) * ∏ j : S, g j) + 1 := by
     have : (fun (S : Finset ℕ) ↦ (-1) ^ (Fintype.card S + 1) * ∏ j : S, g j) = (fun (S : Finset ℕ) ↦ if S = ∅ then (-1) ^ (Fintype.card S + 1) * ∏ j : S, g j else (-1) ^ (Fintype.card S + 1) * ∏ j : S, g j) := by
-      simp? says
-        simp only [Int.reduceNeg, Fintype.card_coe, Finset.univ_eq_attach, ite_self]
+      simp
     nth_rw 2 [this]
     rw [Finset.sum_ite]
     unfold Finset.powerset₀
-    simp? says
-      simp only [Fintype.card_coe, ne_eq, Finset.card_eq_zero, Int.reduceNeg, Finset.univ_eq_attach]
-    set u := ∑ x ∈ Finset.filter (fun S ↦ ¬S = ∅) (Finset.range n).powerset, (-1) ^ (x.card + 1) * ∏ j ∈ x.attach, g ↑j
-    set v := ∑ x ∈ Finset.filter (fun S ↦ S = ∅) (Finset.range n).powerset, (-1) ^ (x.card + 1) * ∏ j ∈ x.attach, g ↑j with hv
-    rw [add_comm v u, add_assoc]
+    simp
+    set u := ∑ x ∈ Finset.filter (fun S ↦ ¬S = ∅) (Finset.range n).powerset, (-1) ^ (x.card + 1) * ∏ j ∈ x.attach, g j.val
+    set v := ∑ x ∈ Finset.filter (fun S ↦ S = ∅) (Finset.range n).powerset, (-1) ^ (x.card + 1) * ∏ j ∈ x.attach, g j.val with hv
+    rw [add_comm v u]
+    rw [add_assoc]
     nth_rw 1 [← add_zero u]
     congr 1
     rw [hv]
-    have : Finset.filter (fun S ↦ S = ∅) (Finset.range n).powerset = ({∅} : Finset (Finset ℕ)) := by
-      ext S
-      simp? says
-        simp only [Finset.mem_filter, Finset.mem_powerset, Finset.mem_singleton, and_iff_right_iff_imp]
+    have : Finset.filter (fun S => S = ∅) (Finset.range n).powerset = ({∅} : Finset (Finset ℕ)) := by
+      ext x
+      simp
       intro h
       rw [h]
       exact Finset.empty_subset (Finset.range n)
     rw [this]
-    simp? says
-      simp only [Int.reduceNeg, Finset.sum_singleton, Finset.card_empty, zero_add, pow_one, Finset.attach_empty, Finset.prod_empty, mul_one, add_left_neg]
-  rw [this, sub_eq_add_neg, Int.neg_eq_neg_one_mul, mul_expand₃ n g, Finset.mul_sum, add_comm 1 _]
-  congr 2
-  ext S
-  rw [← mul_assoc, pow_succ']
-
-lemma mul_expand₁ (n : ℕ) (g : ℕ → ℤ) :
-  1 - ∏ (i : Fin n), (1 - g i) =
-    ∑ (S : Finset.powerset₀ (Finset.univ (α := Fin n))),
-      (-1) ^ (Fintype.card S + 1) * (∏ (j : S), g j) := by
+    simp
+  rw [this]
+  rw [mul_expand₃]
+  conv =>
+    enter [2, 1]
+    congr
+    · skip
+    ext s
+    rw [pow_succ]
+    rw [mul_comm _ (-1)]
+  simp
+  rw [add_comm]
+  rw [sub_eq_add_neg]
+/-- Here we formalize the polynomial expansion of (1 - ∏ i (1 - g i)) in the view of Fin -/
+lemma mul_expand₁ (n : ℕ) (g : ℕ → ℤ) : 1 - ∏ (i : Fin n), (1 - g i) = ∑ (S : Finset.powerset₀ (Finset.univ (α := Fin n))), (-1) ^ (Fintype.card S + 1) * (∏ (j : S), g j) := by
   have hl : ∏ (i : Fin n), (1 - g i) = ∏ i in Finset.range n, (1 - g i) := by
     exact (Finset.prod_range fun i ↦ 1 - g i).symm
   have hr : ∑ (S : Finset.powerset₀ (Finset.univ (α := Fin n))), (-1) ^ (Fintype.card S + 1) * (∏ (j : S), g j) = ∑ (S : Finset.powerset₀ (Finset.range n)), (-1) ^ (Fintype.card S + 1) * (∏ (j : S), g j) := by
@@ -387,25 +354,21 @@ lemma mul_expand₁ (n : ℕ) (g : ℕ → ℤ) :
       use Finset.map ⟨fun (x : Fin n) ↦ x.1, by exact Fin.val_injective⟩ a.1
       unfold Finset.powerset₀ at *
       obtain ⟨a1, ha1⟩ := a
-      simp? at ha1 says
-        simp only [Fintype.card_coe, ne_eq, Finset.card_eq_zero, Finset.powerset_univ, Finset.mem_filter, Finset.mem_univ, true_and] at ha1
-      simp? [ha1] says
-        simp only [Fintype.card_coe, ne_eq, Finset.card_eq_zero, Finset.mem_filter,Finset.mem_powerset, Finset.map_eq_empty, ha1, not_false_eq_true, and_true]
+      simp at ha1
+      simp [ha1]
       intro x hx
       simp at hx
       obtain ⟨a2, ⟨_, ha2⟩⟩ := hx
       rw [← ha2]
-      simp? says simp only [Finset.mem_range, Fin.is_lt]
-    · simp? says simp only [Finset.univ_eq_attach, Finset.mem_attach, imp_self, implies_true]
+      simp
+    · simp
     · intro _ _ _ _ heq
       simp? at heq says
         simp only [Subtype.mk.injEq, Finset.map_inj] at heq
       exact SetCoe.ext heq
-    · simp? says
-        simp only [Finset.univ_eq_attach, Finset.mem_attach, exists_true_left, Subtype.exists, true_implies, Subtype.forall, Subtype.mk.injEq, exists_prop]
+    · simp
       unfold Finset.powerset₀
-      simp? says
-        simp only [Fintype.card_coe, ne_eq, Finset.card_eq_zero, Finset.mem_filter, Finset.mem_powerset, Finset.powerset_univ, Finset.mem_univ, true_and, and_imp]
+      simp
       intro a ha hnempa
       have : ∀ (x : ℕ), x ∈ a → x < n := by
         intro x hx
@@ -422,31 +385,30 @@ lemma mul_expand₁ (n : ℕ) (g : ℕ → ℤ) :
           exact hnempa
         exact ne_of_apply_ne Finset.card this
       · ext x
-        simp? says simp only [Finset.mem_map, Function.Embedding.coeFn_mk]
+        simp
         unfold_let a'
         constructor
         · rintro ⟨a1, ha1, heq⟩
           rw [← heq]
-          simp?  at ha1 says simp only [Finset.mem_attachFin] at ha1
+          simp at ha1
           exact ha1
         · intro hx
           use ⟨x, this x hx⟩
-          simp? says simp only [Finset.mem_attachFin, and_true]
+          simp
           exact hx
     · intro a ha
-      simp? says
-        simp only [Int.reduceNeg, Fintype.card_coe, Finset.univ_eq_attach, Finset.mem_map, Function.Embedding.coeFn_mk, ne_eq, eq_mp_eq_cast, id_eq, eq_mpr_eq_cast, Finset.card_map, mul_eq_mul_left_iff, add_eq_zero, Finset.card_eq_zero, one_ne_zero, and_false, not_false_eq_true, pow_eq_zero_iff, neg_eq_zero, or_false]
+      simp
       rw [Finset.prod_attach]
-      simp? says simp only [Finset.prod_map, Function.Embedding.coeFn_mk]
+      simp
       rw [Finset.prod_attach a.1 (fun (x : Fin n) ↦ g x.val)]
   have hr' : ∑ (S : Finset.powerset₀ (Finset.range n)), (-1) ^ (Fintype.card S + 1) * (∏ (j : S), g j) = ∑ (S ∈ Finset.powerset₀ (Finset.range n)), (-1) ^ (Fintype.card S + 1) * (∏ (j : S), g j) := by
     symm
     apply Finset.sum_subtype
-    simp? says simp only [implies_true]
+    simp
   rw [hl, hr, hr']
   exact mul_expand₂ n g
 
-lemma mul_expand (n : ℕ) (g : (Fin n) → ℤ) :
+lemma mul_expand₀ (n : ℕ) (g : (Fin n) → ℤ) :
   1 - ∏ (i : Fin n), (1 - g i) =
     ∑ (S : Finset.powerset₀ (Finset.univ (α := Fin n))),
       (-1) ^ (Fintype.card S + 1) * (∏ (j : S), g j) := by
@@ -506,4 +468,4 @@ theorem Principle_of_Inclusion_Exclusion {α : Type*} [DecidableEq α] (n : ℕ)
           · skip
           · ext i
             · rw [← hg i]}
-  apply mul_expand
+  apply mul_expand₀
