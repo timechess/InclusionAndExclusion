@@ -343,7 +343,7 @@ lemma mul_expand₂ (n : ℕ) (g : ℕ → ℤ) : 1 - ∏ i ∈ Finset.range n, 
   simp
   rw [add_comm]
   rw [sub_eq_add_neg]
-/-- Here we formalize the polynomial expansion of (1 - ∏ i (1 - g i)) in the view of Fin -/
+/-- Here we formalize the polynomial expansion of (1 - ∏ i (1 - g i)) in the view of (Finset (Fin n)) -/
 lemma mul_expand₁ (n : ℕ) (g : ℕ → ℤ) : 1 - ∏ (i : Fin n), (1 - g i) = ∑ (S : Finset.powerset₀ (Finset.univ (α := Fin n))), (-1) ^ (Fintype.card S + 1) * (∏ (j : S), g j) := by
   conv =>
     enter [1, 2]
@@ -351,131 +351,87 @@ lemma mul_expand₁ (n : ℕ) (g : ℕ → ℤ) : 1 - ∏ (i : Fin n), (1 - g i)
   have hr : ∑ (S : Finset.powerset₀ (Finset.univ (α := Fin n))), (-1) ^ (Fintype.card S + 1) * (∏ (j : S), g j) = ∑ (S : Finset.powerset₀ (Finset.range n)), (-1) ^ (Fintype.card S + 1) * (∏ (j : S), g j) := by
     apply Finset.sum_bij
     pick_goal 5
-    ·
-      sorry
-    sorry
-  sorry
-  -- have hl : ∏ (i : Fin n), (1 - g i) = ∏ i in Finset.range n, (1 - g i) := by
-  --   exact (Finset.prod_range fun i ↦ 1 - g i).symm
-  -- have hr : ∑ (S : Finset.powerset₀ (Finset.univ (α := Fin n))), (-1) ^ (Fintype.card S + 1) * (∏ (j : S), g j) = ∑ (S : Finset.powerset₀ (Finset.range n)), (-1) ^ (Fintype.card S + 1) * (∏ (j : S), g j) := by
-  --   apply Finset.sum_bij
-  --   pick_goal 5
-  --   · intro a _
-  --     use Finset.map ⟨fun (x : Fin n) ↦ x.1, by exact Fin.val_injective⟩ a.1
-  --     unfold Finset.powerset₀ at *
-  --     obtain ⟨a1, ha1⟩ := a
-  --     simp at ha1
-  --     simp [ha1]
-  --     intro x hx
-  --     simp at hx
-  --     obtain ⟨a2, ⟨_, ha2⟩⟩ := hx
-  --     rw [← ha2]
-  --     simp
-  --   · simp
-  --   · intro _ _ _ _ heq
-  --     simp? at heq says
-  --       simp only [Subtype.mk.injEq, Finset.map_inj] at heq
-  --     exact SetCoe.ext heq
-  --   · simp
-  --     unfold Finset.powerset₀
-  --     simp
-  --     intro a ha hnempa
-  --     have : ∀ (x : ℕ), x ∈ a → x < n := by
-  --       intro x hx
-  --       have := ha hx
-  --       simp? at this says simp only [Finset.mem_range] at this
-  --       exact this
-  --     let a' : Finset (Fin n) := a.attachFin (fun n' hn' ↦ this n' hn')
-  --     use a'
-  --     constructor
-  --     · have : a'.card ≠ 0 := by
-  --         unfold_let a'
-  --         rw [Finset.card_attachFin]
-  --         simp? says simp only [ne_eq, Finset.card_eq_zero]
-  --         exact hnempa
-  --       exact ne_of_apply_ne Finset.card this
-  --     · ext x
-  --       simp
-  --       unfold_let a'
-  --       constructor
-  --       · rintro ⟨a1, ha1, heq⟩
-  --         rw [← heq]
-  --         simp at ha1
-  --         exact ha1
-  --       · intro hx
-  --         use ⟨x, this x hx⟩
-  --         simp
-  --         exact hx
-  --   · intro a ha
-  --     simp
-  --     rw [Finset.prod_attach]
-  --     simp
-  --     rw [Finset.prod_attach a.1 (fun (x : Fin n) ↦ g x.val)]
-  -- have hr' : ∑ (S : Finset.powerset₀ (Finset.range n)), (-1) ^ (Fintype.card S + 1) * (∏ (j : S), g j) = ∑ (S ∈ Finset.powerset₀ (Finset.range n)), (-1) ^ (Fintype.card S + 1) * (∏ (j : S), g j) := by
-  --   symm
-  --   apply Finset.sum_subtype
-  --   simp
-  -- rw [hl, hr, hr']
-  -- exact mul_expand₂ n g
-
-lemma mul_expand₀ (n : ℕ) (g : (Fin n) → ℤ) :
-  1 - ∏ (i : Fin n), (1 - g i) =
-    ∑ (S : Finset.powerset₀ (Finset.univ (α := Fin n))),
-      (-1) ^ (Fintype.card S + 1) * (∏ (j : S), g j) := by
-        set g' : ℕ → ℤ := fun x ↦ if h : x < n then g ⟨x, h⟩ else 0
-        have (x : Fin n) : g' x = g x := by
-          show (fun x ↦ if h : x < n then g ⟨x, h⟩ else 0) x = g x
-          simp
-        simp_rw [← this]
-        exact mul_expand₁ n g'
-
-theorem Principle_of_Inclusion_Exclusion {α : Type*} [DecidableEq α] (n : ℕ) (A : (Fin n) → Finset α) :
-  (Fintype.card (⋃ (i : Fin n), ((A i) : Set α)))
-    = Finset.sum
-      (Finset.univ (α := (Finset.powerset₀ (Finset.univ (α := Fin n)))))
-        (fun S ↦ (-1 : ℤ) ^ (Fintype.card S + 1) * Fintype.card (⋂ (i : S.1), ((A i) : Set α))) := by
-  set U : Finset α := FinUnion₀ A
+    · intro a ha
+      use Finset.map ⟨fun (x : Fin n) ↦ x.val, (by exact Fin.val_injective)⟩ a.val
+      unfold Finset.powerset₀ at *
+      rcases a with ⟨a₁, ha₁⟩
+      simp at ha₁
+      simp [ha₁]
+      intro x hx
+      simp at hx
+      rcases hx with ⟨ax,⟨hax₁,hax₂⟩⟩
+      simp
+      rw [← hax₂]
+      exact ax.isLt
+    · intro a ha
+      simp
+    · intro a₁ ha₁ a₂ ha₂ h
+      simp at h
+      exact SetCoe.ext h
+    · simp
+      unfold Finset.powerset₀
+      simp
+      intro a ha₁ ha₂
+      have : ∀ x ∈ a, x < n := by
+        intro x hx
+        exact List.mem_range.mp (ha₁ hx)
+      use a.attachFin this
+      constructor
+      · have : (a.attachFin this).card ≠ 0 := by
+          rw [Finset.card_attachFin]
+          simp [ha₂]
+        exact ne_of_apply_ne Finset.card this
+      ext x
+      simp
+      constructor
+      · intro hx
+        rcases hx with ⟨a₁,⟨ha₁,ha₂⟩⟩
+        rw [← ha₂]
+        exact ha₁
+      · intro hx
+        use ⟨x, this x hx⟩
+    · intro a ha
+      simp
+      rw [Finset.prod_attach]
+      simp
+      rw [Finset.prod_attach a.val (fun (x : Fin n) ↦ g x.val)]
+  rw [hr]
+  rw [mul_expand₂]
+  have hr' : ∑ (S : Finset.powerset₀ (Finset.range n)), (-1) ^ (Fintype.card S + 1) * (∏ (j : S), g j) = ∑ (S ∈ Finset.powerset₀ (Finset.range n)), (-1) ^ (Fintype.card S + 1) * (∏ (j : S), g j) := by
+    symm
+    apply Finset.sum_subtype
+    simp
+  rw [hr']
+/-- Here we formalize the polynomial expansion of (1 - ∏ i (1 - g i)) in the view of (fun (Fin n) ↦ ℕ) -/
+lemma mul_expand₀ (n : ℕ) (g : (Fin n) → ℤ) : 1 - ∏ (i : Fin n), (1 - g i) = ∑ (S : Finset.powerset₀ (Finset.univ (α := Fin n))), (-1) ^ (Fintype.card S + 1) * (∏ (j : S), g j) := by
+  set g' : ℕ → ℤ := fun x ↦ if h : x < n then g ⟨x, h⟩ else 0
+  have (x : Fin n) : g x = g' x := by
+    unfold_let g'
+    simp
+  simp_rw [this]
+  exact mul_expand₁ n g'
+/-- Finally, we can start to formalize the main theorem -/
+theorem Principle_of_Inclusion_Exclusion {α : Type*} [DecidableEq α] (n : ℕ) (A : (Fin n) → Finset α) : (Fintype.card (⋃ (i : Fin n), ((A i) : Set α))) = Finset.sum (Finset.univ (α := (Finset.powerset₀ (Finset.univ (α := Fin n))))) (fun S ↦ (-1 : ℤ) ^ (Fintype.card S + 1) * Fintype.card (⋂ (i : S.1), ((A i) : Set α))) := by
   rw [card_eq_FinUnion]
   simp_rw [card_eq_FinInter]
-  have hU1 : FinUnion₀ A ⊆ U := by rfl
-  have hU2 (S : (Finset.powerset₀ (Finset.univ (α := Fin n)))) :
-    @FinInter₀ α S _ _ _ (fun i ↦ A i) ⊆ U := by
-    rw [← Finset.coe_subset, eq_FinInter₀, eq_FinUnion₀]
+  have : FinUnion₀ A ⊆ FinUnion₀ A := by rfl
+  rw [card_eq_sum_char_fun this]
+  have h (S : (Finset.powerset₀ (Finset.univ (α := Fin n)))) : (@FinInter₀ α S _ _ _ (fun i ↦ A i)) ⊆ (FinUnion₀ A) := by
+    rw [← Finset.coe_subset]
+    rw [eq_FinInter₀]
+    rw [eq_FinUnion₀]
     intro x hx
-    let s : S.1 := Classical.choice (by infer_instance)
-    simp? says simp only [Set.mem_iInter, Finset.mem_coe, Subtype.forall] at hx
-    simp? says simp only [Set.mem_iUnion, Finset.mem_coe]
-    exact ⟨s.1, hx s.1 s.2⟩
-  rw [card_eq_sum_char_fun hU1]
-  conv => {
-    rhs
-    congr
-    · skip
-    · ext S
-      rw [card_eq_sum_char_fun (hU2 S)]
-      rw [Finset.mul_sum]}
+    simp at *
+    let s : S.val := Classical.choice (by exact powerset₀_nonempty S)
+    use s.1
+    exact hx s.1 s.2
+  conv =>
+    enter [2, 2, x]
+    rw [card_eq_sum_char_fun (h x)]
+    rw [Finset.mul_sum]
   rw [Finset.sum_comm]
   congr 1
   ext x
-  set g := fun (i : Fin n) ↦ char_fun (A i) x
-  have hg (i : Fin n) : g i = char_fun (A i) x := rfl
-  conv => {
-    congr
-    · rw [char_fun_FinUnion]
-      congr
-      · skip
-      · congr
-        · skip
-        · ext i
-          · rw [← hg i]
-    · congr
-      · skip
-      · ext S
-        rw [char_fun_FinInter]
-        congr
-        · skip
-        · congr
-          · skip
-          · ext i
-            · rw [← hg i]}
+  rw [char_fun_FinUnion]
+  simp_rw [char_fun_FinInter]
   apply mul_expand₀
