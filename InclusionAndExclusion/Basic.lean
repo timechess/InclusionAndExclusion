@@ -345,68 +345,78 @@ lemma mul_expand₂ (n : ℕ) (g : ℕ → ℤ) : 1 - ∏ i ∈ Finset.range n, 
   rw [sub_eq_add_neg]
 /-- Here we formalize the polynomial expansion of (1 - ∏ i (1 - g i)) in the view of Fin -/
 lemma mul_expand₁ (n : ℕ) (g : ℕ → ℤ) : 1 - ∏ (i : Fin n), (1 - g i) = ∑ (S : Finset.powerset₀ (Finset.univ (α := Fin n))), (-1) ^ (Fintype.card S + 1) * (∏ (j : S), g j) := by
-  have hl : ∏ (i : Fin n), (1 - g i) = ∏ i in Finset.range n, (1 - g i) := by
-    exact (Finset.prod_range fun i ↦ 1 - g i).symm
+  conv =>
+    enter [1, 2]
+    rw [(Finset.prod_range fun i ↦ 1 - g i).symm]
   have hr : ∑ (S : Finset.powerset₀ (Finset.univ (α := Fin n))), (-1) ^ (Fintype.card S + 1) * (∏ (j : S), g j) = ∑ (S : Finset.powerset₀ (Finset.range n)), (-1) ^ (Fintype.card S + 1) * (∏ (j : S), g j) := by
     apply Finset.sum_bij
     pick_goal 5
-    · intro a _
-      use Finset.map ⟨fun (x : Fin n) ↦ x.1, by exact Fin.val_injective⟩ a.1
-      unfold Finset.powerset₀ at *
-      obtain ⟨a1, ha1⟩ := a
-      simp at ha1
-      simp [ha1]
-      intro x hx
-      simp at hx
-      obtain ⟨a2, ⟨_, ha2⟩⟩ := hx
-      rw [← ha2]
-      simp
-    · simp
-    · intro _ _ _ _ heq
-      simp? at heq says
-        simp only [Subtype.mk.injEq, Finset.map_inj] at heq
-      exact SetCoe.ext heq
-    · simp
-      unfold Finset.powerset₀
-      simp
-      intro a ha hnempa
-      have : ∀ (x : ℕ), x ∈ a → x < n := by
-        intro x hx
-        have := ha hx
-        simp? at this says simp only [Finset.mem_range] at this
-        exact this
-      let a' : Finset (Fin n) := a.attachFin (fun n' hn' ↦ this n' hn')
-      use a'
-      constructor
-      · have : a'.card ≠ 0 := by
-          unfold_let a'
-          rw [Finset.card_attachFin]
-          simp? says simp only [ne_eq, Finset.card_eq_zero]
-          exact hnempa
-        exact ne_of_apply_ne Finset.card this
-      · ext x
-        simp
-        unfold_let a'
-        constructor
-        · rintro ⟨a1, ha1, heq⟩
-          rw [← heq]
-          simp at ha1
-          exact ha1
-        · intro hx
-          use ⟨x, this x hx⟩
-          simp
-          exact hx
-    · intro a ha
-      simp
-      rw [Finset.prod_attach]
-      simp
-      rw [Finset.prod_attach a.1 (fun (x : Fin n) ↦ g x.val)]
-  have hr' : ∑ (S : Finset.powerset₀ (Finset.range n)), (-1) ^ (Fintype.card S + 1) * (∏ (j : S), g j) = ∑ (S ∈ Finset.powerset₀ (Finset.range n)), (-1) ^ (Fintype.card S + 1) * (∏ (j : S), g j) := by
-    symm
-    apply Finset.sum_subtype
-    simp
-  rw [hl, hr, hr']
-  exact mul_expand₂ n g
+    ·
+      sorry
+    sorry
+  sorry
+  -- have hl : ∏ (i : Fin n), (1 - g i) = ∏ i in Finset.range n, (1 - g i) := by
+  --   exact (Finset.prod_range fun i ↦ 1 - g i).symm
+  -- have hr : ∑ (S : Finset.powerset₀ (Finset.univ (α := Fin n))), (-1) ^ (Fintype.card S + 1) * (∏ (j : S), g j) = ∑ (S : Finset.powerset₀ (Finset.range n)), (-1) ^ (Fintype.card S + 1) * (∏ (j : S), g j) := by
+  --   apply Finset.sum_bij
+  --   pick_goal 5
+  --   · intro a _
+  --     use Finset.map ⟨fun (x : Fin n) ↦ x.1, by exact Fin.val_injective⟩ a.1
+  --     unfold Finset.powerset₀ at *
+  --     obtain ⟨a1, ha1⟩ := a
+  --     simp at ha1
+  --     simp [ha1]
+  --     intro x hx
+  --     simp at hx
+  --     obtain ⟨a2, ⟨_, ha2⟩⟩ := hx
+  --     rw [← ha2]
+  --     simp
+  --   · simp
+  --   · intro _ _ _ _ heq
+  --     simp? at heq says
+  --       simp only [Subtype.mk.injEq, Finset.map_inj] at heq
+  --     exact SetCoe.ext heq
+  --   · simp
+  --     unfold Finset.powerset₀
+  --     simp
+  --     intro a ha hnempa
+  --     have : ∀ (x : ℕ), x ∈ a → x < n := by
+  --       intro x hx
+  --       have := ha hx
+  --       simp? at this says simp only [Finset.mem_range] at this
+  --       exact this
+  --     let a' : Finset (Fin n) := a.attachFin (fun n' hn' ↦ this n' hn')
+  --     use a'
+  --     constructor
+  --     · have : a'.card ≠ 0 := by
+  --         unfold_let a'
+  --         rw [Finset.card_attachFin]
+  --         simp? says simp only [ne_eq, Finset.card_eq_zero]
+  --         exact hnempa
+  --       exact ne_of_apply_ne Finset.card this
+  --     · ext x
+  --       simp
+  --       unfold_let a'
+  --       constructor
+  --       · rintro ⟨a1, ha1, heq⟩
+  --         rw [← heq]
+  --         simp at ha1
+  --         exact ha1
+  --       · intro hx
+  --         use ⟨x, this x hx⟩
+  --         simp
+  --         exact hx
+  --   · intro a ha
+  --     simp
+  --     rw [Finset.prod_attach]
+  --     simp
+  --     rw [Finset.prod_attach a.1 (fun (x : Fin n) ↦ g x.val)]
+  -- have hr' : ∑ (S : Finset.powerset₀ (Finset.range n)), (-1) ^ (Fintype.card S + 1) * (∏ (j : S), g j) = ∑ (S ∈ Finset.powerset₀ (Finset.range n)), (-1) ^ (Fintype.card S + 1) * (∏ (j : S), g j) := by
+  --   symm
+  --   apply Finset.sum_subtype
+  --   simp
+  -- rw [hl, hr, hr']
+  -- exact mul_expand₂ n g
 
 lemma mul_expand₀ (n : ℕ) (g : (Fin n) → ℤ) :
   1 - ∏ (i : Fin n), (1 - g i) =
