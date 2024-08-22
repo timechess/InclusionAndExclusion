@@ -14,7 +14,7 @@ build-print:
 #(cd blueprint/print && BIBINPUTS=../src bibtex print.aux)
 	(cd blueprint/src && xelatex -output-directory=../print print.tex)
 	(cd blueprint/src && xelatex -output-directory=../print print.tex)
-	(cp blueprint/print/print.bbl blueprint/src/web.bbl)
+#(cp blueprint/print/print.bbl blueprint/src/web.bbl)
 
 build-web:
 	(cd blueprint/src && poetry run plastex -c plastex.cfg web.tex)
