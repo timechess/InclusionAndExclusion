@@ -5,22 +5,202 @@
 % \github{https://github.com/reaslab/blueprint-template/}
 % \dochome{https://reaslab.github.io/blueprint-template/doc/}
 
-% \home{localhost:8080}
-% \dochome{localhost:8080/doc}
+\home{localhost:8000}
+\dochome{localhost:8000/doc}
 
 \maketitle
 
 
 \tableofcontents
+
+\nocite{*} % Delete this line if you have citations.
+
 \section{Introduction}
 
 
+\section{FinInter}
 
-\section{Example}
+\begin{definition}\label{List.FinInter}
+  \leanok
+  \lean{List.FinInter}
+          Given finite number of finite sets, List.FinInter returns their intersection using an inductive way.
+\end{definition}
+
+\begin{lemma}\label{List.eq_FinInter}
+  \lean{List.eq_FinInter}
+  \uses{List.FinInter}
+
+\end{lemma}
+
+\begin{definition}\label{Multiset.FinInter}
+  \lean{Multiset.FinInter}
+  \uses{List.FinInter,List.eq_FinInter}
+          We say the intersection of several finite sets does not depend on the order in which who and who intersect first. Therefore, we introduce the definition of multiset. Given a function A, we define a new function from a multiset to the intersection of finite sets whose index is in the multiset
+\end{definition}
+
+\begin{lemma}\label{Multiset.eq_FinInter}
+  \lean{Multiset.eq_FinInter}
+  \uses{List.FinInter,List.eq_FinInter,Multiset.FinInter}
+\end{lemma}
+
+\begin{definition}\label{FinInter₀}
+  \lean{FinInter₀}
+  \uses{Multiset.FinInter}
+
+\end{definition}
+
+\begin{lemma}\label{eq_FinInter₀}
+  \lean{eq_FinInter₀}
+  \uses{Multiset.eq_FinInter,FinInter₀}
+
+\end{lemma}
 
 % To avoid bibtex errors
-\nocite{*} % Delete this line if you have citations.
+\section{FinUnion}
 
-Here you can use LaTex.
+\begin{definition}\label{List.FinUnion}
+  \leanok
+  \lean{List.FinUnion}
+          Given finite number of finite sets, List.FinInter returns their union using an inductive way
+\end{definition}
 
-\input{demo}
+\begin{lemma}\label{List.eq_FinUnion}
+  \lean{List.eq_FinUnion}
+  \uses{List.FinUnion}
+
+\end{lemma}
+
+\begin{definition}\label{Multiset.FinUnion}
+  \lean{Multiset.FinUnion}
+  \uses{List.FinUnion,List.eq_FinUnion}
+          We define a new function from a multiset to the union of finite sets whose index is in the multiset
+\end{definition}
+
+\begin{lemma}\label{Multiset.eq_FinUnion}
+  \lean{Multiset.eq_FinUnion}
+  \uses{List.FinUnion,List.eq_FinUnion,Multiset.FinUnion}
+\end{lemma}
+
+\begin{definition}\label{FinUnion₀}
+  \lean{FinUnion₀}
+  \uses{Multiset.FinUnion}
+
+\end{definition}
+
+\begin{lemma}\label{eq_FinUnion₀}
+  \lean{eq_FinUnion₀}
+  \uses{Multiset.eq_FinUnion,FinUnion₀}
+
+\end{lemma}
+
+\section{ToInt}
+
+\begin{definition}\label{toInt}
+  \leanok
+  \lean{toInt}
+          We assign a value to a proposition. If the proposition holds, we assign a value of 1; otherwise, we assign a value of 0
+\end{definition}
+
+\begin{lemma}\label{toInt_and}
+  \lean{toInt_and}
+  \uses{toInt}
+          The value of P and Q both holds is equal to the value of P times the value of Q
+\end{lemma}
+
+\begin{lemma}\label{toInt_not}
+  \lean{toInt_not}
+  \uses{toInt}
+          The value of not P is equal to one sub the value of P
+\end{lemma}
+
+\begin{definition}\label{char_fun}
+  \leanok
+  \lean{char_fun}
+  \uses{toInt}
+          We define a function that if x in A then returns 1, else returns 0
+\end{definition}
+
+\begin{lemma}\label{char_fun_inter}
+  \lean{char_fun_inter}
+  \uses{toInt,toInt_and,char_fun}
+          We claim that x in the intersection of A and B is equal to x in A and x in B both holds
+\end{lemma}
+
+\begin{lemma}\label{char_fun_union}
+  \lean{char_fun_union}
+  \uses{toInt,toInt_and,toInt_not,char_fun}
+          We claim that x in the union of A and B is equal to at least one of x in A and x in B holds
+\end{lemma}
+\section{Auxiliary}
+
+\begin{definition}\label{Finset.powerset₀}
+  \leanok
+  \lean{Finset.powerset₀}
+          We define all the nonempty subsets of A to be A.
+\end{definition}
+
+\begin{lemma}\label{card_eq}
+  \lean{card_eq}
+          It's obvious that if a Finset A equals to a Set B in the view of Set, then they have the same number of elements. Since we use this lemma a lot in below proof, we put it here to be an independent lemma
+\end{lemma}
+
+\begin{lemma}\label{mul_expand₃}
+  \lean{mul_expand₃}
+
+\end{lemma}
+
+\begin{lemma}\label{mul_expand₂}
+  \lean{mul_expand₂}
+  \uses{Finset.powerset₀,mul_expand₃}
+
+\end{lemma}
+
+\begin{lemma}\label{mul_expand₁}
+  \lean{mul_expand₁}
+  \uses{Finset.powerset₀,mul_expand₂}
+
+\end{lemma}
+
+
+\section{MainTheorem}
+
+\begin{lemma}\label{card_eq_sum_char_fun}
+  \lean{card_eq_sum_char_fun}
+  \uses{toInt,char_fun,card_eq}
+
+\end{lemma}
+
+\begin{lemma}\label{card_eq_FinInter}
+  \lean{card_eq_FinInter}
+  \uses{FinInter₀,eq_FinInter₀,card_eq}
+\end{lemma}
+
+\begin{lemma}\label{card_eq_FinUnion}
+  \lean{card_eq_FinUnion}
+  \uses{card_eq,FinUnion₀,eq_FinUnion₀}
+\end{lemma}
+
+\begin{lemma}\label{char_fun_FinInter}
+  \lean{char_fun_FinInter}
+  \uses{FinInter₀,eq_FinInter₀,toInt,char_fun}
+
+\end{lemma}
+
+\begin{lemma}\label{char_fun_FinUnion}
+  \lean{char_fun_FinUnion}
+  \uses{FinUnion₀,eq_FinUnion₀,toInt,char_fun}
+
+\end{lemma}
+
+\begin{lemma}\label{mul_expand₀}
+  \lean{mul_expand₀}
+  \uses{Finset.powerset₀,mul_expand₁}
+
+\end{lemma}
+
+\begin{theorem}\label{Principle_of_Inclusion_Exclusion}
+  \lean{Principle_of_Inclusion_Exclusion}
+  \uses{FinInter₀,FinUnion₀,eq_FinInter₀,eq_FinUnion₀,Finset.powerset₀,char_fun,card_eq_sum_char_fun,char_fun_FinInter,char_fun_FinUnion,card_eq,card_eq_FinInter,card_eq_FinUnion,mul_expand₀}
+          Finally, we can start to formalize the main theorem.
+\end{theorem}
+
