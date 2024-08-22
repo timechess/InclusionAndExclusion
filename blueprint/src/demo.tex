@@ -2,114 +2,65 @@
 \begin{definition}\label{List.FinInter}
         \leanok
         \lean{List.FinInter}
-                given finite number of finite sets, List.FinInter returns their intersection using an inductive way
-    \end{definition}
-
-\begin{definition}\label{List.FinUnion}
-        \leanok
-        \lean{List.FinUnion}
-                given finite number of finite sets, List.FinInter returns their union using an inductive way
+                Given finite number of finite sets, List.FinInter returns their intersection using an inductive way
     \end{definition}
 
 \begin{lemma}\label{List.eq_FinInter}
-        \leanok
         \lean{List.eq_FinInter}
         \uses{List.FinInter}
-                forall x : α, show that x ∈ (List.FinInter A L) ↔ forall i in L, x ∈ (A i)
+                Forall x of type α, x in (List.FinInter A L) if and only if forall i in L, x in (A i)
     \end{lemma}
-
-\begin{proof}
-    \leanok
-\end{proof}
-
-\begin{lemma}\label{List.eq_FinUnion}
-        \leanok
-        \lean{List.eq_FinUnion}
-        \uses{List.FinUnion}
-                forall x : α, show that x ∈ (List.FinUnion A L) ↔ there exists an i in L, such that x ∈ (A i)
-    \end{lemma}
-
-\begin{proof}
-    \leanok
-\end{proof}
 
 \begin{definition}\label{Multiset.FinInter}
-        \leanok
         \lean{Multiset.FinInter}
-        \uses{List.FinInter,List.eq_FinInter}
-                we say the intersection of several finite sets does not depend on the order in which who and who intersect first. Therefore, we introduce the definition of multiset. Given a function A, we define a new function from a multiset to the intersection of finite sets whose index is in the multiset
-    \end{definition}
-
-\begin{definition}\label{Multiset.FinUnion}
-        \leanok
-        \lean{Multiset.FinUnion}
-        \uses{List.FinUnion,List.eq_FinUnion}
-                Same as above, we define a new function from a multiset to the union of finite sets whose index is in the multiset
+        \uses{List.FinInter}
+                We say the intersection of several finite sets does not depend on the order in which who and who intersect first. Therefore, we introduce the definition of multiset. Given a function A, we define a new function from a multiset to the intersection of finite sets whose index is in the multiset
     \end{definition}
 
 \begin{lemma}\label{Multiset.eq_FinInter}
-        \leanok
         \lean{Multiset.eq_FinInter}
-        \uses{List.FinInter,List.eq_FinInter,Multiset.FinInter}
                 We prove the lemma 'List.eq_FinInter' to be still true in the multiset case
     \end{lemma}
 
-\begin{proof}
-    \leanok
-\end{proof}
-
-\begin{lemma}\label{Multiset.eq_FinUnion}
-        \leanok
-        \lean{Multiset.eq_FinUnion}
-        \uses{List.FinUnion,List.eq_FinUnion,Multiset.FinUnion}
-                We prove the lemma 'List.eq_FinUnion' to be still true in the multiset case
-    \end{lemma}
-
-\begin{proof}
-    \leanok
-\end{proof}
-
 \begin{definition}\label{FinInter₀}
-        \leanok
         \lean{FinInter₀}
         \uses{Multiset.FinInter}
                 Given a finite index set (@Finset.univ β _), we define FinInter₀ to be the intersection of all finite sets whose index's type is β
     \end{definition}
 
-\begin{definition}\label{FinUnion₀}
-        \leanok
-        \lean{FinUnion₀}
-        \uses{Multiset.FinUnion}
-                Given a finite index set (@Finset.univ β _), we define FinUnion₀ to be the union of all finite sets whose index's type is β
-    \end{definition}
-
 \begin{lemma}\label{eq_FinInter₀}
-        \leanok
         \lean{eq_FinInter₀}
-        \uses{Multiset.eq_FinInter,FinInter₀}
+        \uses{FinInter₀}
                 Same as above, we prove the lemma 'List.eq_FinInter' to be still true in the whole case
     \end{lemma}
-
-\begin{proof}
-    \leanok
-\end{proof}
-
-\begin{lemma}\label{eq_FinUnion₀}
-        \leanok
-        \lean{eq_FinUnion₀}
-        \uses{Multiset.eq_FinUnion,FinUnion₀}
-                Same as above, we prove the lemma 'List.eq_FinUnion' to be still true in the whole case
-    \end{lemma}
-
-\begin{proof}
-    \leanok
-\end{proof}
 
 \begin{definition}\label{Finset.powerset₀}
         \leanok
         \lean{Finset.powerset₀}
                 We define all the nonempty subsets of A to be A.powerset₀
     \end{definition}
+
+\begin{lemma}\label{card_eq}
+        \lean{card_eq}
+                It's obvious that if a Finset A equals to a Set B in the view of Set, then they have the same number of elements. Since we use this lemma a lot in below proof, we put it here to be an independent lemma
+    \end{lemma}
+
+\begin{lemma}\label{mul_expand₃}
+        \lean{mul_expand₃}
+                Here we formalize the polynomial expansion of (∏ i (1 - g i))
+    \end{lemma}
+
+\begin{lemma}\label{mul_expand₂}
+        \lean{mul_expand₂}
+        \uses{Finset.powerset₀,mul_expand₃}
+                Same as above, here we formalize the polynomial expansion of (1 - ∏ i (1 - g i))
+    \end{lemma}
+
+\begin{lemma}\label{mul_expand₁}
+        \lean{mul_expand₁}
+        \uses{Finset.powerset₀}
+                Here we formalize the polynomial expansion of (1 - ∏ i (1 - g i)) in the view of (Finset (Fin n))
+    \end{lemma}
 
 \begin{definition}\label{toInt}
         \leanok
@@ -118,172 +69,110 @@
     \end{definition}
 
 \begin{lemma}\label{toInt_and}
-        \leanok
         \lean{toInt_and}
         \uses{toInt}
                 The value of P and Q both holds is equal to the value of P times the value of Q
     \end{lemma}
 
-\begin{proof}
-    \leanok
-\end{proof}
-
 \begin{lemma}\label{toInt_not}
-        \leanok
         \lean{toInt_not}
         \uses{toInt}
-                The value of ¬ P is equal to one sub the value of P
+                The value of not P is equal to one sub the value of P
     \end{lemma}
-
-\begin{proof}
-    \leanok
-\end{proof}
 
 \begin{definition}\label{char_fun}
         \leanok
         \lean{char_fun}
         \uses{toInt}
-                We define a function that if x ∈ A then returns 1, else returns 0
+                We define a function that if x in A then returns 1, else returns 0
     \end{definition}
 
-\begin{lemma}\label{card_eq_sum_char_fun}
+\begin{lemma}\label{char_fun_inter}
+        \lean{char_fun_inter}
+        \uses{char_fun}
+                We claim that x in the intersection of A and B is equal to x in A and x in B both holds
+    \end{lemma}
+
+\begin{lemma}\label{char_fun_union}
+        \lean{char_fun_union}
+        \uses{char_fun}
+                We claim that x in the union of A and B is equal to at least one of x in A and x in B holds
+    \end{lemma}
+
+\begin{definition}\label{List.FinUnion}
         \leanok
+        \lean{List.FinUnion}
+                Given finite number of finite sets, List.FinInter returns their union using an inductive way
+    \end{definition}
+
+\begin{lemma}\label{List.eq_FinUnion}
+        \lean{List.eq_FinUnion}
+        \uses{List.FinUnion}
+                Forall x of type α, x in (List.FinUnion A L) if and only if there exists an i in L, such that x in (A i)
+    \end{lemma}
+
+\begin{definition}\label{Multiset.FinUnion}
+        \lean{Multiset.FinUnion}
+        \uses{List.FinUnion}
+                We define a new function from a multiset to the union of finite sets whose index is in the multiset
+    \end{definition}
+
+\begin{lemma}\label{Multiset.eq_FinUnion}
+        \lean{Multiset.eq_FinUnion}
+                We prove the lemma 'List.eq_FinUnion' to be still true in the multiset case
+    \end{lemma}
+
+\begin{definition}\label{FinUnion₀}
+        \lean{FinUnion₀}
+        \uses{Multiset.FinUnion}
+                Given a finite index set (@Finset.univ β _), we define FinUnion₀ to be the union of all finite sets whose index's type is β
+    \end{definition}
+
+\begin{lemma}\label{eq_FinUnion₀}
+        \lean{eq_FinUnion₀}
+        \uses{FinUnion₀}
+                Same as above, we prove the lemma 'List.eq_FinUnion' to be still true in the whole case
+    \end{lemma}
+
+\begin{lemma}\label{card_eq_sum_char_fun}
         \lean{card_eq_sum_char_fun}
-        \uses{toInt,char_fun,card_eq}
+        \uses{card_eq,char_fun}
                 Here we introduce a way to calculate the number of elements in B which is a subset of A
     \end{lemma}
 
-\begin{proof}
-    \leanok
-\end{proof}
-
-\begin{lemma}\label{char_fun_inter}
-        \leanok
-        \lean{char_fun_inter}
-        \uses{toInt,toInt_and,char_fun}
-                We claim that x ∈ (A ∩ B) is equal to x ∈ A and x ∈ B both holds
-    \end{lemma}
-
-\begin{proof}
-    \leanok
-\end{proof}
-
-\begin{lemma}\label{char_fun_union}
-        \leanok
-        \lean{char_fun_union}
-        \uses{toInt,toInt_and,toInt_not,char_fun}
-                We claim that x ∈ (A ∪ B) is equal to at least one of x ∈ A and x ∈ B holds
-    \end{lemma}
-
-\begin{proof}
-    \leanok
-\end{proof}
-
-\begin{lemma}\label{char_fun_FinInter}
-        \leanok
-        \lean{char_fun_FinInter}
-        \uses{FinInter₀,eq_FinInter₀,toInt,char_fun}
-                We claim that x ∈ (∩ i (A i)) is equal to forall i, x ∈ (A i) holds
-    \end{lemma}
-
-\begin{proof}
-    \leanok
-\end{proof}
-
-\begin{lemma}\label{char_fun_FinUnion}
-        \leanok
-        \lean{char_fun_FinUnion}
-        \uses{FinUnion₀,eq_FinUnion₀,toInt,char_fun}
-                We claim that x ∈ (∪ i (A i)) is equal to at least one of (i : β, x ∈ (A i)) holds
-    \end{lemma}
-
-\begin{proof}
-    \leanok
-\end{proof}
-
-\begin{lemma}\label{card_eq}
-        \leanok
-        \lean{card_eq}
-                It's obvious that if a Finset A equals to a Set B in the view of Set, then they have the same number of elements. Since we use this lemma a lot in below proof, we put it here to be an independent lemma
-    \end{lemma}
-
-\begin{proof}
-    \leanok
-\end{proof}
-
 \begin{lemma}\label{card_eq_FinInter}
-        \leanok
         \lean{card_eq_FinInter}
         \uses{FinInter₀,eq_FinInter₀,card_eq}
                 We derive it from eq_FinInter₀ and card_eq
     \end{lemma}
 
-\begin{proof}
-    \leanok
-\end{proof}
-
 \begin{lemma}\label{card_eq_FinUnion}
-        \leanok
         \lean{card_eq_FinUnion}
-        \uses{FinUnion₀,eq_FinUnion₀,card_eq}
+        \uses{card_eq,FinUnion₀,eq_FinUnion₀}
                 We derive it from eq_FinUnion₀ and card_eq
     \end{lemma}
 
-\begin{proof}
-    \leanok
-\end{proof}
-
-\begin{lemma}\label{mul_expand₃}
-        \leanok
-        \lean{mul_expand₃}
-                Here we formalize the polynomial expansion of (∏ i (1 - g i))
+\begin{lemma}\label{char_fun_FinInter}
+        \lean{char_fun_FinInter}
+        \uses{FinInter₀,char_fun}
+                We claim that x in the intersection of the family sets {A i} is equal to forall i, x in (A i) holds
     \end{lemma}
 
-\begin{proof}
-    \leanok
-\end{proof}
-
-\begin{lemma}\label{mul_expand₂}
-        \leanok
-        \lean{mul_expand₂}
-        \uses{Finset.powerset₀,mul_expand₃}
-                Same as above, here we formalize the polynomial expansion of (1 - ∏ i (1 - g i))
+\begin{lemma}\label{char_fun_FinUnion}
+        \lean{char_fun_FinUnion}
+        \uses{char_fun,FinUnion₀}
+                We claim that x in the union of the family sets {A i} is equal to at least one of (i of type β, x in (A i)) holds
     \end{lemma}
-
-\begin{proof}
-    \leanok
-\end{proof}
-
-\begin{lemma}\label{mul_expand₁}
-        \leanok
-        \lean{mul_expand₁}
-        \uses{Finset.powerset₀,mul_expand₂}
-                Here we formalize the polynomial expansion of (1 - ∏ i (1 - g i)) in the view of (Finset (Fin n))
-    \end{lemma}
-
-\begin{proof}
-    \leanok
-\end{proof}
 
 \begin{lemma}\label{mul_expand₀}
-        \leanok
         \lean{mul_expand₀}
-        \uses{Finset.powerset₀,mul_expand₁}
+        \uses{Finset.powerset₀}
                 Here we formalize the polynomial expansion of (1 - ∏ i (1 - g i)) in the view of (fun (Fin n) ↦ ℕ)
     \end{lemma}
 
-\begin{proof}
-    \leanok
-\end{proof}
-
 \begin{theorem}\label{Principle_of_Inclusion_Exclusion}
-        \leanok
         \lean{Principle_of_Inclusion_Exclusion}
-        \uses{FinInter₀,FinUnion₀,eq_FinInter₀,eq_FinUnion₀,Finset.powerset₀,char_fun,card_eq_sum_char_fun,char_fun_FinInter,char_fun_FinUnion,card_eq,card_eq_FinInter,card_eq_FinUnion,mul_expand₀}
+        \uses{Finset.powerset₀}
                 Finally, we can start to formalize the main theorem
     \end{theorem}
-
-\begin{proof}
-    \leanok
-\end{proof}
 
