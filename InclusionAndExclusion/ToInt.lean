@@ -13,11 +13,21 @@ def toInt (P : Prop) [Decidable P] : ℤ := if P then 1 else 0
 
 /-- The value of P and Q both holds is equal to the value of P times the value of Q -/
 lemma toInt_and {P Q : Prop} [Decidable P] [Decidable Q] : toInt (P ∧ Q) = toInt P * toInt Q := by
-  sorry
+  unfold toInt
+  simp only [mul_ite , mul_one , mul_zero]
+  by_cases h : P
+  · simp [h]
+  · simp only [h, false_and , ↓ reduceIte, ite_self]
+
 
 /-- The value of not P is equal to one sub the value of P -/
 lemma toInt_not (P : Prop) [Decidable P] : toInt (¬ P) = 1 - toInt P := by
-  sorry
+  unfold toInt
+  simp only [ite_not]
+  by_cases h : P
+  · simp [h]
+  · simp only [h , false_and , ↓ reduceIte, ite_self, sub_zero]
+
 
 /-- We define a function that if x in A then returns 1, else returns 0 -/
 def char_fun {α : Type*} [DecidableEq α] (A : Finset α) (x : α) : ℤ := toInt (x ∈ A)
