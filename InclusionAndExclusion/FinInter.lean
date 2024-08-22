@@ -20,7 +20,7 @@ lemma List.eq_FinInter {α β : Type*} [DecidableEq α] [Fintype β] (A : β →
   | x :: [] => (by unfold List.FinInter; simp)
   | x1 :: x2 :: xs => (by
     unfold List.FinInter
-    simp
+    simp only [Finset.mem_inter, mem_cons, forall_eq_or_imp, and_congr_right_iff]
     intro x a
     have := List.eq_FinInter A (x2 :: xs) (cons_ne_nil x2 _)
     simp only [this, mem_cons, forall_eq_or_imp]
