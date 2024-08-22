@@ -23,74 +23,75 @@
 \begin{definition}\label{List.FinInter}
   \leanok
   \lean{List.FinInter}
-          Given finite number of finite sets, List.FinInter returns their intersection using an inductive way.
+  Define the intersection of a list of finite sets indexed by \verb|β|, where each set is given by a function \verb|A : β → Finset α|.
 \end{definition}
 
 \begin{lemma}\label{List.eq_FinInter}
   \lean{List.eq_FinInter}
   \uses{List.FinInter}
-
+  Prove that an element is in the intersection of a list of finite sets if and only if it is in each of the sets.
 \end{lemma}
 
 \begin{definition}\label{Multiset.FinInter}
   \lean{Multiset.FinInter}
   \uses{List.FinInter,List.eq_FinInter}
-          We say the intersection of several finite sets does not depend on the order in which who and who intersect first. Therefore, we introduce the definition of multiset. Given a function A, we define a new function from a multiset to the intersection of finite sets whose index is in the multiset
+  Define the intersection of a multiset of finite sets indexed by \verb|β|, where each set is given by a function \verb|A : β → Finset α|.
 \end{definition}
 
 \begin{lemma}\label{Multiset.eq_FinInter}
   \lean{Multiset.eq_FinInter}
   \uses{List.FinInter,List.eq_FinInter,Multiset.FinInter}
+  Prove that an element is in the intersection of a multiset of finite sets if and only if it is in each of the sets.
 \end{lemma}
 
 \begin{definition}\label{FinInter₀}
   \lean{FinInter₀}
   \uses{Multiset.FinInter}
-
+  Define the intersection of all finite sets indexed by \verb|β|, where each set is given by a function \verb|A : β → Finset α|.
 \end{definition}
 
 \begin{lemma}\label{eq_FinInter₀}
   \lean{eq_FinInter₀}
   \uses{Multiset.eq_FinInter,FinInter₀}
-
+  Prove that the intersection of all finite sets indexed by \verb|β| is equal to the intersection of their corresponding sets in \verb|Set α|.
 \end{lemma}
 
-% To avoid bibtex errors
 \section{FinUnion}
 
 \begin{definition}\label{List.FinUnion}
   \leanok
   \lean{List.FinUnion}
-          Given finite number of finite sets, List.FinInter returns their union using an inductive way
+  Define the union of a list of finite sets indexed by \verb|β|, where each set is given by a function \verb|A : β → Finset α|.
 \end{definition}
 
 \begin{lemma}\label{List.eq_FinUnion}
   \lean{List.eq_FinUnion}
   \uses{List.FinUnion}
-
+  Prove that an element is in the union of a list of finite sets if and only if it is in at least one of the sets.
 \end{lemma}
 
 \begin{definition}\label{Multiset.FinUnion}
   \lean{Multiset.FinUnion}
   \uses{List.FinUnion,List.eq_FinUnion}
-          We define a new function from a multiset to the union of finite sets whose index is in the multiset
+  Define the union of a multiset of finite sets indexed by \verb|β|, where each set is given by a function \verb|A : β → Finset α|.
 \end{definition}
 
 \begin{lemma}\label{Multiset.eq_FinUnion}
   \lean{Multiset.eq_FinUnion}
   \uses{List.FinUnion,List.eq_FinUnion,Multiset.FinUnion}
+  Prove that an element is in the union of a multiset of finite sets if and only if it is in at least one of the sets.
 \end{lemma}
 
 \begin{definition}\label{FinUnion₀}
   \lean{FinUnion₀}
   \uses{Multiset.FinUnion}
-
+  Define the union of all finite sets indexed by \verb|β|, where each set is given by a function \verb|A : β → Finset α|.
 \end{definition}
 
 \begin{lemma}\label{eq_FinUnion₀}
   \lean{eq_FinUnion₀}
   \uses{Multiset.eq_FinUnion,FinUnion₀}
-
+  Prove that the union of all finite sets indexed by \verb|β| is equal to the union of their corresponding sets in \verb|Set α|.
 \end{lemma}
 
 \section{ToInt}
@@ -98,67 +99,67 @@
 \begin{definition}\label{toInt}
   \leanok
   \lean{toInt}
-          We assign a value to a proposition. If the proposition holds, we assign a value of 1; otherwise, we assign a value of 0
+  Assign a value to a proposition. If the proposition holds, assign a value of 1; otherwise, assign a value of 0.
 \end{definition}
 
 \begin{lemma}\label{toInt_and}
   \lean{toInt_and}
   \uses{toInt}
-          The value of P and Q both holds is equal to the value of P times the value of Q
+  The value of both propositions P and Q holding is equal to the value of P times the value of Q.
 \end{lemma}
 
 \begin{lemma}\label{toInt_not}
   \lean{toInt_not}
   \uses{toInt}
-          The value of not P is equal to one sub the value of P
+  The value of the negation of a proposition P is equal to 1 minus the value of P.
 \end{lemma}
 
 \begin{definition}\label{char_fun}
   \leanok
   \lean{char_fun}
   \uses{toInt}
-          We define a function that if x in A then returns 1, else returns 0
+  Define a characteristic function that returns 1 if \verb|x| is in the finite set \verb|A|, and 0 otherwise.
 \end{definition}
 
 \begin{lemma}\label{char_fun_inter}
   \lean{char_fun_inter}
   \uses{toInt,toInt_and,char_fun}
-          We claim that x in the intersection of A and B is equal to x in A and x in B both holds
+  The characteristic function of the intersection of two finite sets \verb|A| and \verb|B| is equal to the product of their characteristic functions.
 \end{lemma}
 
 \begin{lemma}\label{char_fun_union}
   \lean{char_fun_union}
   \uses{toInt,toInt_and,toInt_not,char_fun}
-          We claim that x in the union of A and B is equal to at least one of x in A and x in B holds
+  The characteristic function of the union of two finite sets \verb|A| and \verb|B| is equal to 1 minus the product of 1 minus their characteristic functions.
 \end{lemma}
 \section{Auxiliary}
 
 \begin{definition}\label{Finset.powerset₀}
   \leanok
   \lean{Finset.powerset₀}
-          We define all the nonempty subsets of A to be A.
+  Define the set of all nonempty subsets of a given finite set \verb|A|.
 \end{definition}
 
 \begin{lemma}\label{card_eq}
   \lean{card_eq}
-          It's obvious that if a Finset A equals to a Set B in the view of Set, then they have the same number of elements. Since we use this lemma a lot in below proof, we put it here to be an independent lemma
+  If a finite set \verb|A| is equal to a set \verb|B| in the sense of set theory, then they have the same number of elements.
 \end{lemma}
 
 \begin{lemma}\label{mul_expand₃}
   \lean{mul_expand₃}
-
+  Formalize the polynomial expansion of the product \(\prod_{i=0}^{n-1} (1 - g(i))\).
 \end{lemma}
 
 \begin{lemma}\label{mul_expand₂}
   \lean{mul_expand₂}
   \uses{Finset.powerset₀,mul_expand₃}
-
+  Formalize the polynomial expansion of \(1 - \prod_{i=0}^{n-1} (1 - g(i))\).
 \end{lemma}
 
 \begin{lemma}\label{mul_expand₁}
   \lean{mul_expand₁}
   \uses{Finset.powerset₀,mul_expand₂}
-
+  Formalize the polynomial expansion of \(1 - \prod_{i=0}^{n-1} (1 - g(i))\) in the context of finite sets of natural numbers up to \verb|n|.
 \end{lemma}
 
 
@@ -167,40 +168,42 @@
 \begin{lemma}\label{card_eq_sum_char_fun}
   \lean{card_eq_sum_char_fun}
   \uses{toInt,char_fun,card_eq}
-
+  The cardinality of a subset \verb|B| of \verb|A| is equal to the sum of the characteristic function of \verb|B| over \verb|A|.
 \end{lemma}
 
 \begin{lemma}\label{card_eq_FinInter}
   \lean{card_eq_FinInter}
   \uses{FinInter₀,eq_FinInter₀,card_eq}
+  The cardinality of the intersection of a family of finite sets indexed by \verb|β| is equal to the cardinality of their intersection in \verb|Finset| form.
 \end{lemma}
 
 \begin{lemma}\label{card_eq_FinUnion}
   \lean{card_eq_FinUnion}
   \uses{card_eq,FinUnion₀,eq_FinUnion₀}
+  The cardinality of the union of a family of finite sets indexed by \verb|β| is equal to the cardinality of their union in \verb|Finset| form.
 \end{lemma}
 
 \begin{lemma}\label{char_fun_FinInter}
   \lean{char_fun_FinInter}
   \uses{FinInter₀,eq_FinInter₀,toInt,char_fun}
-
+  The characteristic function of the intersection of a family of finite sets indexed by \verb|β| is equal to the product of their characteristic functions.
 \end{lemma}
 
 \begin{lemma}\label{char_fun_FinUnion}
   \lean{char_fun_FinUnion}
   \uses{FinUnion₀,eq_FinUnion₀,toInt,char_fun}
-
+  The characteristic function of the union of a family of finite sets indexed by \verb|β| is equal to 1 minus the product of 1 minus their characteristic functions.
 \end{lemma}
 
 \begin{lemma}\label{mul_expand₀}
   \lean{mul_expand₀}
   \uses{Finset.powerset₀,mul_expand₁}
-
+  The polynomial expansion of \(1 - \prod_{i=0}^{n-1} (1 - g(i))\).
 \end{lemma}
 
 \begin{theorem}\label{Principle_of_Inclusion_Exclusion}
   \lean{Principle_of_Inclusion_Exclusion}
   \uses{FinInter₀,FinUnion₀,eq_FinInter₀,eq_FinUnion₀,Finset.powerset₀,char_fun,card_eq_sum_char_fun,char_fun_FinInter,char_fun_FinUnion,card_eq,card_eq_FinInter,card_eq_FinUnion,mul_expand₀}
-          Finally, we can start to formalize the main theorem.
+  The principle of inclusion-exclusion for a finite union of finite sets.
 \end{theorem}
 
