@@ -50,8 +50,36 @@
 \begin{definition}\label{Multiset.FinInter}
   \lean{Multiset.FinInter}
   \uses{List.FinInter,List.eq_FinInter}
+  \leanok
   Define the intersection of a multiset of finite sets indexed by \verb|β|, where each set is given by a function \verb|A : β → Finset α|.
 \end{definition}
+
+\begin{proof}
+  \leanok
+  To prove that if sets \( A \) and \( B \) are equal, then \( A \cup C = B \cup C \), we can approach the proof by showing two inclusions: \( A \cup C \subseteq B \cup C \) and \( B \cup C \subseteq A \cup C \).
+
+  \textbf{1. Show \( A \cup C \subseteq B \cup C \):}
+
+  \begin{itemize}
+    \item Take any element \( x \in A \cup C \).
+    \item By the definition of union, \( x \in A \cup C \) means that \( x \) is either in \( A \) or in \( C \).
+    \item If \( x \in A \), and since \( A = B \), it follows that \( x \in B \).
+    \item Therefore, \( x \in B \cup C \) because \( x \) is in \( B \) (or in \( C \) if it were in \( C \)).
+    \item Hence, every element of \( A \cup C \) is also in \( B \cup C \), which proves \( A \cup C \subseteq B \cup C \).
+  \end{itemize}
+
+  \textbf{2. Show \( B \cup C \subseteq A \cup C \):}
+
+  \begin{itemize}
+    \item Take any element \( x \in B \cup C \).
+    \item By the definition of union, \( x \in B \cup C \) means that \( x \) is either in \( B \) or in \( C \).
+    \item If \( x \in B \), and since \( A = B \), it follows that \( x \in A \).
+    \item Therefore, \( x \in A \cup C \) because \( x \) is in \( A \) (or in \( C \) if it were in \( C \)).
+    \item Hence, every element of \( B \cup C \) is also in \( A \cup C \), which proves \( B \cup C \subseteq A \cup C \).
+  \end{itemize}
+
+  Since we have shown both inclusions, we conclude that \( A \cup C = B \cup C \).
+\end{proof}
 
 \begin{lemma}\label{Multiset.eq_FinInter}
   \lean{Multiset.eq_FinInter}
