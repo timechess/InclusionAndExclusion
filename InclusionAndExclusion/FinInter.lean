@@ -28,47 +28,30 @@ lemma List.eq_FinInter {α β : Type*} [DecidableEq α] [Fintype β] (A : β →
 
 /-- We say the intersection of several finite sets does not depend on the order in which who and who intersect first. Therefore, we introduce the definition of multiset. Given a function A, we define a new function from a multiset to the intersection of finite sets whose index is in the multiset -/
 def Multiset.FinInter {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) : Multiset β → Finset α :=
-  Quot.lift (α := List β) (β := Finset α) (List.FinInter A) (by{
+  Quot.lift (α := List β) (β := Finset α) (List.FinInter A) (by
     intro a b hab
     simp [Setoid.r] at hab
     ext x
     by_cases ept:a≠ []
-
-    have :b≠ []:=by{
+    have :b≠ []:=by
       contrapose! ept
       rw[ept] at hab
       exact Eq.symm (List.Perm.nil_eq (id (List.Perm.symm hab)))
-    }
     rw[List.eq_FinInter _ _ this]
     rw[List.eq_FinInter _ _ ept]
-    -- apply List.Perm.mem_iff at hab
-
     constructor
-    · intro ha
-      intro aa
-      intro bb
-      have hyp: aa ∈ a := by{
-        exact (List.Perm.mem_iff (id (List.Perm.symm hab))).mp bb
-      }
-      have hyp' : x ∈ A aa := by{
-        exact ha aa hyp
-      }
+    · intro ha aa bb
+      have hyp: aa ∈ a := by exact (List.Perm.mem_iff (id (List.Perm.symm hab))).mp bb
+      have hyp' : x ∈ A aa := by exact ha aa hyp
       exact hyp'
-    · intro ha
-      intro aa
-      intro bb
-      have hyp: aa ∈ b := by{
-        exact (List.Perm.mem_iff hab).mp bb
-      }
+    · intro ha aa bb
+      have hyp: aa ∈ b := by exact (List.Perm.mem_iff hab).mp bb
       exact ha aa hyp
     simp only [ne_eq, not_not] at ept
     rw[ept]
-    have : b = [] := by{
-      rw[ept] at hab
-      exact Eq.symm (List.Perm.nil_eq hab)
-    }
+    have : b = [] := by rw[ept] at hab;exact Eq.symm (List.Perm.nil_eq hab)
     rw[this]
-  })
+  )
 
 /-- We prove the lemma 'List.eq_FinInter' to be still true in the multiset case -/
 lemma Multiset.eq_FinInter {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) (M : Multiset β) (h : M ≠ ∅) : ∀ x : α, x ∈ M.FinInter A ↔ ∀ m ∈ M, x ∈ A m := by
@@ -85,4 +68,6 @@ lemma eq_FinInter₀ {α β : Type*} [DecidableEq α] [Fintype β] [h : Nonempty
 /-- We show that the intersection of finite number of finite sets is still a finite set -/
 instance FinInter_Fin {α β : Type*} [DecidableEq α] [Fintype β] [Nonempty β] (A : β → Finset α) :
   Fintype (⋂ (i : β), (A i : Set α)) := by
-  sorry
+  rw [← eq_FinInter₀]
+  simp only [Finset.coe_sort_coe]
+  exact FinsetCoe.fintype (FinInter₀ A)
