@@ -55,8 +55,16 @@ def Multiset.FinInter {α β : Type*} [DecidableEq α] [Fintype β] (A : β → 
 
 /-- We prove the lemma 'List.eq_FinInter' to be still true in the multiset case -/
 lemma Multiset.eq_FinInter {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) (M : Multiset β) (h : M ≠ ∅) : ∀ x : α, x ∈ M.FinInter A ↔ ∀ m ∈ M, x ∈ A m := by
-  sorry
-
+  intro x
+  have : M.FinInter A = M.toList.FinInter A := by
+    unfold Multiset.FinInter
+    have : M.toList = M := by simp
+    nth_rw 1 [← this]
+    rfl
+  rw [this]
+  rw [List.eq_FinInter]
+  simp
+  simpa
 /-- Given a finite index set (@Finset.univ β _), we define FinInter₀ to be the intersection of all finite sets whose index's type is β -/
 def FinInter₀ {α β : Type*} [DecidableEq α] [Fintype β] [Nonempty β] (A : β → Finset α) : Finset α := Multiset.FinInter A (Finset.univ).1
 
