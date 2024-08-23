@@ -71,7 +71,15 @@ def FinInter₀ {α β : Type*} [DecidableEq α] [Fintype β] [Nonempty β] (A :
 /-- Same as above, we prove the lemma 'List.eq_FinInter' to be still true in the whole case -/
 lemma eq_FinInter₀ {α β : Type*} [DecidableEq α] [Fintype β] [h : Nonempty β] (A : β → Finset α) :
   FinInter₀ A = ⋂ (i : β), (A i : Set α) := by
-  sorry
+  unfold FinInter₀
+  ext x
+  simp
+  rw[Multiset.eq_FinInter]
+  · simp
+  · have h1:∀ t:β,t∈ Finset.univ.val :=by exact fun t => Finset.mem_univ_val t
+    intro h2
+    rw[h2]at h1
+    simp only [Multiset.empty_eq_zero, Multiset.not_mem_zero, forall_const] at h1
 
 /-- We show that the intersection of finite number of finite sets is still a finite set -/
 instance FinInter_Fin {α β : Type*} [DecidableEq α] [Fintype β] [Nonempty β] (A : β → Finset α) :
