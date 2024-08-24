@@ -12,7 +12,13 @@ open BigOperators
 
 /-- Here we introduce a way to calculate the number of elements in B which is a subset of A -/
 lemma card_eq_sum_char_fun {α : Type*} [DecidableEq α] {A B : Finset α} (h : B ⊆ A) : Fintype.card B = Finset.sum A (char_fun B) := by
-  sorry
+  simp only [Fintype.card_coe]
+  unfold char_fun toInt
+  simp only [Finset.sum_ite_mem, Finset.sum_const, nsmul_eq_mul, mul_one, Nat.cast_inj]
+  have h1: A ∩ B = B := by
+    exact Finset.inter_eq_right.mpr h
+  exact congrArg Finset.card (id (Eq.symm h1))
+
 
 /-- We derive it from eq_FinInter₀ and card_eq -/
 lemma card_eq_FinInter {α β : Type*} [DecidableEq α] [Fintype β] [Nonempty β] (A : β → Finset α) : Fintype.card (⋂ (i : β), (A i : Set α)) = Fintype.card (FinInter₀ A) := card_eq _ _ (eq_FinInter₀ A)

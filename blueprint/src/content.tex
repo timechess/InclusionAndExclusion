@@ -226,8 +226,20 @@
 \begin{lemma}\label{card_eq_sum_char_fun}
   \lean{card_eq_sum_char_fun}
   \uses{toInt,char_fun,card_eq}
+  \leanok
   The cardinality of a subset \verb|B| of \verb|A| is equal to the sum of the characteristic function of \verb|B| over \verb|A|.
 \end{lemma}
+
+\begin{proof}
+  \leanok
+  The right-hand side of the equation is equivalent to the number of elements in the intersection of sets $A$ and $B$. The left-hand side of the equation represents the number of elements in set $B$. Since $B$ is a subset of $A$, the intersection of $A$ and $B$ is equal to $B$. Therefore, the equality holds.
+
+  Mathematically, this can be stated as:
+  \begin{equation*}
+  |B| = |A \cap B|
+  \end{equation*}
+  given that $B \subseteq A$.
+\end{proof}
 
 \begin{lemma}\label{card_eq_FinInter}
   \lean{card_eq_FinInter}
@@ -252,26 +264,26 @@
   \leanok
   Let $\mathcal{F} = \{A_1, A_2, \ldots, A_n\}$ be a collection of sets and let $B = \bigcap_{A \in \mathcal{F}} A$ be the intersection of these sets. Consider the characteristic function $\chi_B(x)$ for any element $x$. We wish to establish the following equivalence:
 
-\begin{equation*}
+  \begin{equation*}
 
-\chi_B(x) = \prod_{A \in \mathcal{F}} \chi_A(x)
-\end{equation*}
+  \chi_B(x) = \prod_{A \in \mathcal{F}} \chi_A(x)
+  \end{equation*}
 
-We analyze two cases:
+  We analyze two cases:
 
-\subsection*{Case 1: $x$ belongs to the intersection $B$}
+  \subsection*{Case 1: $x$ belongs to the intersection $B$}
 
-\paragraph{Left Hand Side (LHS):} $\chi_B(x) = 1$. This condition is equivalent to $x$ belonging to every set $A \in \mathcal{F}$.
+  \paragraph{Left Hand Side (LHS):} $\chi_B(x) = 1$. This condition is equivalent to $x$ belonging to every set $A \in \mathcal{F}$.
 
-\paragraph{Right Hand Side (RHS):} The product becomes $\prod_{A \in \mathcal{F}} \chi_A(x) = \prod_{A \in \mathcal{F}} 1 = 1$. Therefore, LHS = RHS.
+  \paragraph{Right Hand Side (RHS):} The product becomes $\prod_{A \in \mathcal{F}} \chi_A(x) = \prod_{A \in \mathcal{F}} 1 = 1$. Therefore, LHS = RHS.
 
-\subsection*{Case 2: $x$ does not belong to the intersection $B$}
+  \subsection*{Case 2: $x$ does not belong to the intersection $B$}
 
-\paragraph{Left Hand Side (LHS):} $\chi_B(x) = 0$. This is equivalent to the existence of a set $A \in \mathcal{F}$ such that $x \not\in A$.
+  \paragraph{Left Hand Side (LHS):} $\chi_B(x) = 0$. This is equivalent to the existence of a set $A \in \mathcal{F}$ such that $x \not\in A$.
 
-\paragraph{Right Hand Side (RHS):} There exists an $A \in \mathcal{F}$ for which $\chi_A(x) = 0$. Since the product involves a zero, $\prod_{A \in \mathcal{F}} \chi_A(x) = 0$. Thus, LHS = RHS.
+  \paragraph{Right Hand Side (RHS):} There exists an $A \in \mathcal{F}$ for which $\chi_A(x) = 0$. Since the product involves a zero, $\prod_{A \in \mathcal{F}} \chi_A(x) = 0$. Thus, LHS = RHS.
 
-In conclusion, for any element $x$, we have $\chi_B(x) = \prod_{A \in \mathcal{F}} \chi_A(x)$, which completes the proof.
+  In conclusion, for any element $x$, we have $\chi_B(x) = \prod_{A \in \mathcal{F}} \chi_A(x)$, which completes the proof.
 
 \end{proof}
 
