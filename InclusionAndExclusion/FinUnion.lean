@@ -7,19 +7,41 @@ import InclusionAndExclusion.Auxiliary
 
 open BigOperators
 
+
+/--X_i , β , A , ⋃ X_i-/
 /-- Given finite number of finite sets, List.FinInter returns their union using an inductive way -/
 def List.FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α)(L : List β) : Finset α :=
   match L with
   | [] => ∅
   | x :: xs => A x ∪ (xs.FinUnion A)
 
+lemma mem_union_left_not_right (α : Type) (s t : Finset α) (x: α) : x ∈ s ∪ t  → x ∉ S → x ∈ T :=by
+  sorry
+
 /-- Forall x of type α, x in (List.FinUnion A L) if and only if there exists an i in L, such that x in (A i) -/
 lemma List.eq_FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α)(L : List β) : ∀ x : α, x ∈ L.FinUnion A ↔ ∃ i ∈ L, x ∈ A i :=
   match L with
   | [] => (by unfold List.FinUnion; simp)
   | x :: [] => (by unfold List.FinUnion; unfold List.FinUnion; simp)
-  | x1 :: x2 :: xs => (by
-    sorry
+  | x :: xs => (by
+      unfold List.FinUnion
+      intro x1
+      simp only [Finset.mem_union, mem_cons, exists_eq_or_imp]
+      by_cases h1: x1 ∈ (A x)
+      · simp [h1]
+      · constructor
+        · intro h
+          rcases h with h | h
+          · apply h1 at h
+            exact False.elim h
+          · right
+
+        · intro h
+          rcases h with h | h
+          · apply h1 at h
+            exact False.elim h
+          · right
+
   )
 
 /-- We define a new function from a multiset to the union of finite sets whose index is in the multiset -/
