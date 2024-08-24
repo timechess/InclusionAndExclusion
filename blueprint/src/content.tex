@@ -90,6 +90,10 @@
 
 \begin{proof}
   \leanok
+  This proof demonstrates that the intersection of multisets matches its list representation. We start by showing that an element $x$ is in $M.FinInter A$ if and only if $x$ is in $A m$ for all `$m$` in $M$.
+
+  Then, we prove that $M.FinInter A$ equals $M.toList.FinInter A$, where $M.toList$ is the list version of $M$. By simplifying and applying list theorems, we confirm that the intersection is consistent in both representations.
+
   \begin{enumerate}
     \item \texttt{intro x}: Introduce an arbitrary element \texttt{x} and prove that \texttt{x} belongs to \texttt{M.FinInter A} if and only if \texttt{x} belongs to \texttt{A m} for every element \texttt{m} in \texttt{M}.
     \item \texttt{have : M.FinInter A = M.toList.FinInter A}: Show that \texttt{M.FinInter A} is equal to \texttt{M.toList.FinInter A}, where \texttt{M.toList} is the list representation of \texttt{M}.
