@@ -22,7 +22,29 @@ lemma card_eq_FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β →
 
 /-- We claim that x in the intersection of the family sets {A i} is equal to forall i, x in (A i) holds -/
 lemma char_fun_FinInter {α β : Type*} [DecidableEq α] [Fintype β] [Nonempty β] (A : β → Finset α) (x : α) : char_fun (FinInter₀ A) x = ∏ (i : β), (char_fun (A i) x) := by
-  sorry
+  unfold char_fun toInt
+  have h_1 (h1 : x ∈ FinInter₀ A): (1 : ℤ) = ∏ i : β, if x ∈ A i then 1 else 0 := by
+    have ha : x ∈ ⋂ (i : β), (A i : Set α) := by
+      rw [← eq_FinInter₀]
+      exact h1
+    have hb : ∀ i : β, x ∈ A i := by
+      simp only [Set.mem_iInter, Finset.mem_coe] at ha
+      exact ha
+    simp only [hb, ↓reduceIte, Finset.prod_const_one]
+  split
+  rename x ∈ FinInter₀ A => h1
+  exact h_1 h1
+  rename x ∉ FinInter₀ A => h2
+  have hc: ∃ i : β, x ∉ A i := by
+    contrapose! h2
+    change x ∈ (FinInter₀ A :Set α)
+    simp_rw [eq_FinInter₀ A]
+    simp only [Set.mem_iInter, Finset.mem_coe]
+    exact h2
+  symm
+  apply Finset.prod_eq_zero_iff.mpr
+  simp only [Finset.mem_univ, ite_eq_right_iff, one_ne_zero, imp_false, true_and]
+  exact hc
 
 /-- We claim that x in the union of the family sets {A i} is equal to at least one of (i of type β, x in (A i)) holds -/
 lemma char_fun_FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) (x : α) : char_fun (FinUnion₀ A) x = 1 - ∏ (i : β), (1 - char_fun (A i) x) := by
