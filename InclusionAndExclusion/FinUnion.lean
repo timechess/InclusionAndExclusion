@@ -23,36 +23,44 @@ lemma List.eq_FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β →
   match L with
   | [] => (by unfold List.FinUnion; simp)
   | x :: [] => (by unfold List.FinUnion; unfold List.FinUnion; simp)
-  | x :: xs => (by
-      unfold List.FinUnion
-      intro x1
-      simp only [Finset.mem_union, mem_cons, exists_eq_or_imp]
-      by_cases h1: x1 ∈ (A x)
-      · simp [h1]
-      · constructor
-        · intro h
-          rcases h with h | h
-          · apply h1 at h
-            exact False.elim h
-          · right
-
-        · intro h
-          rcases h with h | h
-          · apply h1 at h
-            exact False.elim h
-          · right
-
+  | x1 :: x2 :: xs => (by
+    sorry
   )
 
 /-- We define a new function from a multiset to the union of finite sets whose index is in the multiset -/
 def Multiset.FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) : Multiset β → Finset α :=
   Quot.lift (α := List β) (List.FinUnion A) (by
-    sorry
+  intro a b h
+  simp [Setoid.r] at h
+  ext x
+  repeat rw [List.eq_FinUnion]
+  constructor
+  · intro h'
+    rcases h' with ⟨i, ia, iA⟩
+    use i
+    constructor
+    · exact (List.Perm.mem_iff h).mp ia
+    · exact iA
+  · intro h'
+    rcases h' with ⟨i, ia, iA ⟩
+    use i
+    constructor
+    · exact (List.Perm.mem_iff (id (List.Perm.symm h))).mp ia
+    · exact iA
   )
 
 /-- We prove the lemma 'List.eq_FinUnion' to be still true in the multiset case -/
-lemma Multiset.eq_FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) (M : Multiset β) : ∀ x : α, x ∈ M.FinUnion A ↔ ∃ m ∈ M, x ∈ A m := by
-  sorry
+lemma Multiset.eq_FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) (M : Multiset β) :
+∀ x : α, x ∈ M.FinUnion A ↔ ∃ m ∈ M, x ∈ A m := by
+  intro h
+  have : M = M.toList :=by simp
+  have : M.FinUnion A = M.toList.FinUnion A := by
+    unfold FinUnion
+    nth_rw 1 [this]
+    exact rfl
+  rw [this]
+  rw [List.eq_FinUnion]
+  simp only [mem_toList]
 
 /-- Given a finite index set (@Finset.univ β _), we define FinUnion₀ to be the union of all finite sets whose index's type is β -/
 def FinUnion₀ {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) : Finset α := Multiset.FinUnion A (Finset.univ).1
