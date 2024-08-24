@@ -90,7 +90,15 @@
 
 \begin{proof}
   \leanok
-  (Waited to be written...)
+  \begin{enumerate}
+    \item \texttt{intro x}: Introduce an arbitrary element \texttt{x} and prove that \texttt{x} belongs to \texttt{M.FinInter A} if and only if \texttt{x} belongs to \texttt{A m} for every element \texttt{m} in \texttt{M}.
+    \item \texttt{have : M.FinInter A = M.toList.FinInter A}: Show that \texttt{M.FinInter A} is equal to \texttt{M.toList.FinInter A}, where \texttt{M.toList} is the list representation of \texttt{M}.
+    \item \texttt{unfold Multiset.FinInter}: Expand the definition of \texttt{Multiset.FinInter}.
+    \item \texttt{have : M.toList = M := by simp}: Prove that \texttt{M.toList} is effectively equal to \texttt{M} through simplification.
+    \item \texttt{nth_rw 1 [← this]}: Use the previously established equality to transform \texttt{M.FinInter A} into \texttt{M.toList.FinInter A}.
+    \item \texttt{rw [this]} and \texttt{rw [List.eq\_FinInter]}: Convert the problem into a list context by applying the corresponding theorem for lists.
+    \item \texttt{simp} and \texttt{simpa}: Use simplification and further application of \texttt{simpa} to complete the proof.
+  \end{enumerate}
 \end{proof}
 
 \begin{definition}\label{FinInter₀}
