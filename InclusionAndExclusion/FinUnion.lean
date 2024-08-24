@@ -14,18 +14,8 @@ def List.FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Fins
   | x :: xs => A x ∪ (xs.FinUnion A)
 
 /-- Forall x of type α, x in (List.FinUnion A L) if and only if there exists an i in L, such that x in (A i) -/
-lemma List.eq_FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α)(L : List β) : ∀ x : α, x ∈ L.FinUnion A ↔ ∃ i ∈ L, x ∈ A i :=by
+lemma List.eq_FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α)(L : List β) : ∀ x : α, x ∈ L.FinUnion A ↔ ∃ i ∈ L, x ∈ A i :=
   match L with
-<<<<<<< HEAD
-  | [] => ( unfold List.FinUnion ;simp)
-  | x :: [] => ( unfold List.FinUnion; unfold List.FinUnion; simp)
-  | x1 :: x2 :: xs =>
-    unfold List.FinUnion
-    simp only [Finset.mem_union, mem_cons, exists_eq_or_imp]
-    intro k
-    have := List.eq_FinUnion A (x2 :: xs) k
-    simp only [this, mem_cons, exists_eq_or_imp]
-=======
   | [] => (by unfold List.FinUnion; simp)
   | x :: [] => (by unfold List.FinUnion; unfold List.FinUnion; simp)
   | x1 :: x2 :: xs => (by
@@ -35,15 +25,10 @@ lemma List.eq_FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β →
     have := List.eq_FinUnion A (x2 :: xs) h
     simp only [this, mem_cons, exists_eq_or_imp]
   )
->>>>>>> 5b6b7be6c0b5a948accdd20449224bdc9973d34a
 
 /-- We define a new function from a multiset to the union of finite sets whose index is in the multiset -/
 def Multiset.FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) : Multiset β → Finset α :=
   Quot.lift (α := List β) (List.FinUnion A) (by
-<<<<<<< HEAD
-
-    sorry
-=======
   intro a b h
   simp [Setoid.r] at h
   ext x
@@ -61,7 +46,6 @@ def Multiset.FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β → 
     constructor
     · exact (List.Perm.mem_iff (id (List.Perm.symm h))).mp ia
     · exact iA
->>>>>>> 5b6b7be6c0b5a948accdd20449224bdc9973d34a
   )
 
 /-- We prove the lemma 'List.eq_FinUnion' to be still true in the multiset case -/
@@ -83,9 +67,7 @@ def FinUnion₀ {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset
 /-- Same as above, we prove the lemma 'List.eq_FinUnion' to be still true in the whole case -/
 lemma eq_FinUnion₀ {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) :
   FinUnion₀ A = ⋃ (i : β), (A i : Set α) := by
-  refine Set.ext ?h
-
-
+  sorry
 
 /-- We show that the union of finite number of finite sets is still a finite set -/
 instance FinUnion_Fin {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) :
