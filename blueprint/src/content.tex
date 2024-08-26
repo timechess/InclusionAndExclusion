@@ -109,7 +109,19 @@
 
 \begin{proof}
   \leanok
-  (Waited to be written...)
+  By definition, \ref{FinInter₀} is the intersection of a universal multiset of finite sets.
+  
+  Two sets $A,B$ are equal means for any $x$, $x\in A$ iff $x\in B$.
+  
+  Using \ref{Multiset.eq_FinInter}, we have for any $m$ in the universal multiset, $x∈A_m$, and the right side is for any $i$ indexed by $β$, $x∈A_i$, which are equivalent.
+  
+  But \ref{Multiset.eq_FinInter} requires that the universal multiset is not empty.
+  
+  By the property of the universal multiset, we have for any $t$ indexed by $β$, $t$ is in the universal multiset.
+  
+  If the universal multiset is empty, then we have a contradiction.
+
+  Thus, the statement holds.
 \end{proof}
 
 \section{FinUnion}
