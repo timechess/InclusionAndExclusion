@@ -18,7 +18,11 @@ lemma List.eq_FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β →
   | [] => (by unfold List.FinUnion; simp)
   | x :: [] => (by unfold List.FinUnion; unfold List.FinUnion; simp)
   | x1 :: x2 :: xs => (by
-    sorry
+    unfold List.FinUnion
+    simp only [Finset.mem_union, mem_cons, exists_eq_or_imp]
+    intro h
+    have := List.eq_FinUnion A (x2 :: xs) h
+    simp only [this, mem_cons, exists_eq_or_imp]
   )
 
 /-- We define a new function from a multiset to the union of finite sets whose index is in the multiset -/
