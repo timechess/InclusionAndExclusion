@@ -58,7 +58,12 @@ lemma char_fun_FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β �
 
 /-- Here we formalize the polynomial expansion of (1 - ∏ i (1 - g i)) in the view of (fun (Fin n) ↦ ℕ) -/
 lemma mul_expand₀ (n : ℕ) (g : (Fin n) → ℤ) : 1 - ∏ (i : Fin n), (1 - g i) = ∑ (S : Finset.powerset₀ (Finset.univ (α := Fin n))), (-1) ^ (Fintype.card S + 1) * (∏ (j : S), g j) := by
-  sorry
+  let g' : ℕ → ℤ := fun x ↦ if h: x < n then g ⟨x,h⟩ else 0
+  have (x : Fin n) : g x = g' x := by
+    unfold_let g'
+    simp only [Fin.is_lt, ↓reduceDIte, Fin.eta]
+  simp_rw[this]
+  exact mul_expand₁ n g'
 
 /-- Finally, we can start to formalize the main theorem -/
 theorem Principle_of_Inclusion_Exclusion {α : Type*} [DecidableEq α] (n : ℕ) (A : (Fin n) → Finset α) : (Fintype.card (⋃ (i : Fin n), ((A i) : Set α))) = Finset.sum (Finset.univ (α := (Finset.powerset₀ (Finset.univ (α := Fin n))))) (fun S ↦ (-1 : ℤ) ^ (Fintype.card S + 1) * Fintype.card (⋂ (i : S.1), ((A i) : Set α))) := sorry
