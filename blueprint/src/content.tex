@@ -90,15 +90,7 @@
 
 \begin{proof}
   \leanok
-  \begin{enumerate}
-    \item \texttt{intro x}: Introduce an arbitrary element \texttt{x} and prove that \texttt{x} belongs to \texttt{M.FinInter A} if and only if \texttt{x} belongs to \texttt{A m} for every element \texttt{m} in \texttt{M}.
-    \item \texttt{have : M.FinInter A = M.toList.FinInter A}: Show that \texttt{M.FinInter A} is equal to \texttt{M.toList.FinInter A}, where \texttt{M.toList} is the list representation of \texttt{M}.
-    \item \texttt{unfold Multiset.FinInter}: Expand the definition of \texttt{Multiset.FinInter}.
-    \item \texttt{have : M.toList = M := by simp}: Prove that \texttt{M.toList} is effectively equal to \texttt{M} through simplification.
-    \item \texttt{nth_rw 1 [← this]}: Use the previously established equality to transform \texttt{M.FinInter A} into \texttt{M.toList.FinInter A}.
-    \item \texttt{rw [this]} and \texttt{rw [List.eq\_FinInter]}: Convert the problem into a list context by applying the corresponding theorem for lists.
-    \item \texttt{simp} and \texttt{simpa}: Use simplification and further application of \texttt{simpa} to complete the proof.
-  \end{enumerate}
+  When talking about the intersection of a multiset of finite sets, we can safely treat the multiset as the list with the same elements in it since order doesn't affect the intersection. So we just need to prove the intersection of a list of finite sets if and only if it is in each of the sets, which is exactly \ref{List.eq_FinInter}.
 \end{proof}
 
 \begin{definition}\label{FinInter₀}
@@ -117,7 +109,19 @@
 
 \begin{proof}
   \leanok
-  (Waited to be written...)
+  By definition, \ref{FinInter₀} is the intersection of a universal multiset of finite sets.
+  
+  Two sets $A,B$ are equal means for any $x$, $x\in A$ iff $x\in B$.
+  
+  Using \ref{Multiset.eq_FinInter}, we have for any $m$ in the universal multiset, $x∈A_m$, and the right side is for any $i$ indexed by $β$, $x∈A_i$, which are equivalent.
+  
+  But \ref{Multiset.eq_FinInter} requires that the universal multiset is not empty.
+  
+  By the property of the universal multiset, we have for any $t$ indexed by $β$, $t$ is in the universal multiset.
+  
+  If the universal multiset is empty, then we have a contradiction.
+
+  Thus, the statement holds.
 \end{proof}
 
 \section{FinUnion}
@@ -280,16 +284,15 @@
 
   Case 1: $x$ belongs to the intersection $B$
 
-  \paragraph{Left Hand Side (LHS):} $\chi_B(x) = 1$. This condition is equivalent to $x$ belonging to every set $A \in \mathcal{F}$.
+  \textbf{Left Hand Side (LHS):} $\chi_B(x) = 1$. This condition is equivalent to $x$ belonging to every set $A \in \mathcal{F}$.
 
-  \paragraph{Right Hand Side (RHS):} The product becomes $\prod_{A \in \mathcal{F}} \chi_A(x) = \prod_{A \in \mathcal{F}} 1 = 1$. Therefore, LHS = RHS.
+  \textbf{Right Hand Side (RHS):} The product becomes $\prod_{A \in \mathcal{F}} \chi_A(x) = \prod_{A \in \mathcal{F}} 1 = 1$. Therefore, LHS = RHS.
 
   Case 2: $x$ does not belong to the intersection $B$
 
-  \paragraph{Left Hand Side (LHS):} $\chi_B(x) = 0$. This is equivalent to the existence of a set $A \in \mathcal{F}$ such that $x \not\in A$.
+  \textbf{Left Hand Side (LHS):} $\chi_B(x) = 0$. This is equivalent to the existence of a set $A \in \mathcal{F}$ such that $x \not\in A$.
 
-  \paragraph{Right Hand Side (RHS):} There exists an $A \in \mathcal{F}$ for which $\chi_A(x) = 0$. Since the product involves a zero, $\prod_{A \in \mathcal{F}} \chi_A(x) = 0$. Thus, LHS = RHS.
-
+  \textbf{Right Hand Side (RHS):} There exists an $A \in \mathcal{F}$ for which $\chi_A(x) = 0$. Since the product involves a zero, $\prod_{A \in \mathcal{F}} \chi_A(x) = 0$. Thus, LHS = RHS.
   In conclusion, for any element $x$, we have $\chi_B(x) = \prod_{A \in \mathcal{F}} \chi_A(x)$, which completes the proof.
 
 \end{proof}

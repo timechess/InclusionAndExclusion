@@ -66,4 +66,21 @@ lemma mul_expand₀ (n : ℕ) (g : (Fin n) → ℤ) : 1 - ∏ (i : Fin n), (1 - 
   exact mul_expand₁ n g'
 
 /-- Finally, we can start to formalize the main theorem -/
-theorem Principle_of_Inclusion_Exclusion {α : Type*} [DecidableEq α] (n : ℕ) (A : (Fin n) → Finset α) : (Fintype.card (⋃ (i : Fin n), ((A i) : Set α))) = Finset.sum (Finset.univ (α := (Finset.powerset₀ (Finset.univ (α := Fin n))))) (fun S ↦ (-1 : ℤ) ^ (Fintype.card S + 1) * Fintype.card (⋂ (i : S.1), ((A i) : Set α))) := sorry
+theorem Principle_of_Inclusion_Exclusion {α : Type*} [DecidableEq α] (n : ℕ) (A : (Fin n) → Finset α) : (Fintype.card (⋃ (i : Fin n), ((A i) : Set α))) = Finset.sum (Finset.univ (α := (Finset.powerset₀ (Finset.univ (α := Fin n))))) (fun S ↦ (-1 : ℤ) ^ (Fintype.card S + 1) * Fintype.card (⋂ (i : S.1), ((A i) : Set α))) := by
+  rw[card_eq_FinUnion]
+  rw[card_eq_sum_char_fun (by rfl)]
+  simp_rw[char_fun_FinUnion]
+  simp_rw[mul_expand₀]
+  rw[Finset.sum_comm]
+  apply Finset.sum_congr (by rfl)
+  simp_rw[← Finset.mul_sum]
+  simp_rw[← char_fun_FinInter]
+  simp_rw[card_eq_FinInter]
+  intro x0 h0
+  rw[card_eq_sum_char_fun]
+  rw[← Finset.coe_subset,eq_FinInter₀,eq_FinUnion₀]
+  intro x h
+  simp at *
+  have x1: x0.1 := Classical.choice (by exact powerset₀_nonempty x0)
+  use x1.1
+  exact h x1.1 x1.2
