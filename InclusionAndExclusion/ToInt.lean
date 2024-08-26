@@ -34,8 +34,22 @@ def char_fun {α : Type*} [DecidableEq α] (A : Finset α) (x : α) : ℤ := toI
 
 /-- We claim that x in the intersection of A and B is equal to x in A and x in B both holds -/
 lemma char_fun_inter {α : Type*} [DecidableEq α] (A B : Finset α) (x : α) : char_fun (A ∩ B) x = (char_fun A x) * (char_fun B x) := by
-    sorry
+    repeat unfold char_fun
+    repeat unfold toInt
+    simp only [Finset.mem_inter, mul_ite, mul_one, mul_zero]
+    by_cases h: x ∈ A
+    · simp [h]
+    · simp only [h, false_and, ↓reduceIte, ite_self]
 
 /-- We claim that x in the union of A and B is equal to at least one of x in A and x in B holds  -/
 lemma char_fun_union {α : Type*} [DecidableEq α] (A B : Finset α) (x : α) : char_fun (A ∪ B) x = 1 - (1 - char_fun A x) * (1 - char_fun B x) := by
-    sorry
+    repeat unfold char_fun
+    repeat unfold toInt
+    simp only [Finset.mem_union]
+    by_cases h : x ∈ A
+    · by_cases i : x ∈ B
+      · simp[h,i]
+      · simp[h,i]
+    · by_cases i : x ∈ B
+      · simp[h,i]
+      · simp[h,i]
