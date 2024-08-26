@@ -64,11 +64,15 @@ lemma Multiset.eq_FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β
 def FinUnion₀ {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) : Finset α := Multiset.FinUnion A (Finset.univ).1
 
 /-- Same as above, we prove the lemma 'List.eq_FinUnion' to be still true in the whole case -/
-lemma eq_FinUnion₀ {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) :
-  FinUnion₀ A = ⋃ (i : β), (A i : Set α) := by
-  sorry
+lemma eq_FinUnion₀ {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) : FinUnion₀ A = ⋃ (i : β), (A i : Set α) := by
+  unfold FinUnion₀
+  ext x
+  simp
+  rw [Multiset.eq_FinUnion]
+  simp
 
 /-- We show that the union of finite number of finite sets is still a finite set -/
 instance FinUnion_Fin {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) :
   Fintype (⋃ (i : β), (A i : Set α)) := by
-  sorry
+  rw [← eq_FinUnion₀]
+  exact FinsetCoe.fintype (FinUnion₀ fun i ↦ A i)

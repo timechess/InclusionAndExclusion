@@ -54,7 +54,27 @@ lemma char_fun_FinInter {α β : Type*} [DecidableEq α] [Fintype β] [Nonempty 
 
 /-- We claim that x in the union of the family sets {A i} is equal to at least one of (i of type β, x in (A i)) holds -/
 lemma char_fun_FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α) (x : α) : char_fun (FinUnion₀ A) x = 1 - ∏ (i : β), (1 - char_fun (A i) x) := by
-  sorry
+  by_cases h : ∃ (i : β), char_fun (A i) x = 1
+  · trans 1
+    · unfold char_fun toInt at *
+      simp at *
+      apply Finset.mem_coe.mp
+      rw [eq_FinUnion₀]
+      apply Set.mem_iUnion.mpr h
+    · have : ∏ i : β, (1 - char_fun (A i) x) = 0 := by
+        rcases h with ⟨j,hj⟩
+        apply Finset.prod_eq_zero (Finset.mem_univ j) (by simp [hj])
+      rw [this]
+      norm_num
+  · unfold char_fun toInt at *
+    simp at *
+    simp [h]
+    by_contra h'
+    have h' := Finset.mem_coe.mpr h'
+    simp_rw [eq_FinUnion₀] at h'
+    have h' := Set.mem_iUnion.mp h'
+    rcases h' with ⟨j,hj⟩
+    exact h j hj
 
 /-- Here we formalize the polynomial expansion of (1 - ∏ i (1 - g i)) in the view of (fun (Fin n) ↦ ℕ) -/
 lemma mul_expand₀ (n : ℕ) (g : (Fin n) → ℤ) : 1 - ∏ (i : Fin n), (1 - g i) = ∑ (S : Finset.powerset₀ (Finset.univ (α := Fin n))), (-1) ^ (Fintype.card S + 1) * (∏ (j : S), g j) := by
