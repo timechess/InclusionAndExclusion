@@ -29,8 +29,23 @@
 \begin{lemma}\label{List.eq_FinInter}
   \lean{List.eq_FinInter}
   \uses{List.FinInter}
-  Prove that an element is in the intersection of a list of finite sets if and only if it is in each of the sets.
+  \leanok
+  Prove that an element is in the intersection of a non-empty list of finite sets if and only if it is in each of the sets.
 \end{lemma}
+
+\begin{proof}
+  \leanok
+  If there's only one element in the list, then it is trival.
+
+  Then we prove by induction.
+
+  Assume the statement hold for a list whose length is $n$, thus an element is in the intersection is in every one of the $n$ sets.
+
+  We add a set $S$ to the beginning of the list. For any element $x$ in the intersection of the $n+1$ sets (which is a subset of the intersection of the previous $n$ sets), it must belongs to the intersection of the previous $n$ sets and $S$. Therefor, $x\in$ the intersection of the $n+1$ sets.
+
+  Thus, the statement holds.
+
+\end{proof}
 
 \begin{definition}\label{Multiset.FinInter}
   \lean{Multiset.FinInter}

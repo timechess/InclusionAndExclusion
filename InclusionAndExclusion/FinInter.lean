@@ -19,7 +19,12 @@ lemma List.eq_FinInter {α β : Type*} [DecidableEq α] [Fintype β] (A : β →
   | [] => (by absurd h; rfl)
   | x :: [] => (by unfold List.FinInter; simp)
   | x1 :: x2 :: xs => (by
-    sorry
+    unfold List.FinInter
+    simp only [Finset.mem_inter, mem_cons, forall_eq_or_imp, and_congr_right_iff]
+    intro x a
+    have := List.eq_FinInter A (x2 :: xs) (cons_ne_nil x2 _)
+    simp only [this, mem_cons, forall_eq_or_imp]
+
   )
 
 /-- We say the intersection of several finite sets does not depend on the order in which who and who intersect first. Therefore, we introduce the definition of multiset. Given a function A, we define a new function from a multiset to the intersection of finite sets whose index is in the multiset -/
