@@ -50,26 +50,79 @@
 \begin{definition}\label{Multiset.FinInter}
   \lean{Multiset.FinInter}
   \uses{List.FinInter,List.eq_FinInter}
+  \leanok
   Define the intersection of a multiset of finite sets indexed by \verb|β|, where each set is given by a function \verb|A : β → Finset α|.
 \end{definition}
+
+\begin{proof}
+  \leanok
+  To prove that if sets \( A \) and \( B \) are equal, then \( A \cup C = B \cup C \), we can approach the proof by showing two inclusions: \( A \cup C \subseteq B \cup C \) and \( B \cup C \subseteq A \cup C \).
+
+  \textbf{1. Show \( A \cup C \subseteq B \cup C \):}
+
+  \begin{itemize}
+    \item Take any element \( x \in A \cup C \).
+    \item By the definition of union, \( x \in A \cup C \) means that \( x \) is either in \( A \) or in \( C \).
+    \item If \( x \in A \), and since \( A = B \), it follows that \( x \in B \).
+    \item Therefore, \( x \in B \cup C \) because \( x \) is in \( B \) (or in \( C \) if it were in \( C \)).
+    \item Hence, every element of \( A \cup C \) is also in \( B \cup C \), which proves \( A \cup C \subseteq B \cup C \).
+  \end{itemize}
+
+  \textbf{2. Show \( B \cup C \subseteq A \cup C \):}
+
+  \begin{itemize}
+    \item Take any element \( x \in B \cup C \).
+    \item By the definition of union, \( x \in B \cup C \) means that \( x \) is either in \( B \) or in \( C \).
+    \item If \( x \in B \), and since \( A = B \), it follows that \( x \in A \).
+    \item Therefore, \( x \in A \cup C \) because \( x \) is in \( A \) (or in \( C \) if it were in \( C \)).
+    \item Hence, every element of \( B \cup C \) is also in \( A \cup C \), which proves \( B \cup C \subseteq A \cup C \).
+  \end{itemize}
+
+  Since we have shown both inclusions, we conclude that \( A \cup C = B \cup C \).
+\end{proof}
 
 \begin{lemma}\label{Multiset.eq_FinInter}
   \lean{Multiset.eq_FinInter}
   \uses{List.FinInter,List.eq_FinInter,Multiset.FinInter}
+  \leanok
   Prove that an element is in the intersection of a multiset of finite sets if and only if it is in each of the sets.
 \end{lemma}
+
+\begin{proof}
+  \leanok
+  When talking about the intersection of a multiset of finite sets, we can safely treat the multiset as the list with the same elements in it since order doesn't affect the intersection. So we just need to prove the intersection of a list of finite sets if and only if it is in each of the sets, which is exactly \ref{List.eq_FinInter}.
+\end{proof}
 
 \begin{definition}\label{FinInter₀}
   \lean{FinInter₀}
   \uses{Multiset.FinInter}
+  \leanok
   Define the intersection of all finite sets indexed by \verb|β|, where each set is given by a function \verb|A : β → Finset α|.
 \end{definition}
 
 \begin{lemma}\label{eq_FinInter₀}
   \lean{eq_FinInter₀}
   \uses{Multiset.eq_FinInter,FinInter₀}
+  \leanok
   Prove that the intersection of all finite sets indexed by \verb|β| is equal to the intersection of their corresponding sets in \verb|Set α|.
 \end{lemma}
+
+\begin{proof}
+  \leanok
+  By definition, \ref{FinInter₀} is the intersection of a universal multiset of finite sets.
+  
+  Two sets $A,B$ are equal means for any $x$, $x\in A$ iff $x\in B$.
+  
+  Using \ref{Multiset.eq_FinInter}, we have for any $m$ in the universal multiset, $x∈A_m$, and the right side is for any $i$ indexed by $β$, $x∈A_i$, which are equivalent.
+  
+  But \ref{Multiset.eq_FinInter} requires that the universal multiset is not empty.
+  
+  By the property of the universal multiset, we have for any $t$ indexed by $β$, $t$ is in the universal multiset.
+  
+  If the universal multiset is empty, then we have a contradiction.
+
+  Thus, the statement holds.
+\end{proof}
 
 \section{FinUnion}
 
@@ -159,22 +212,26 @@
 
 \begin{lemma}\label{card_eq}
   \lean{card_eq}
+  \leanok
   If a finite set \verb|A| is equal to a set \verb|B| in the sense of set theory, then they have the same number of elements.
 \end{lemma}
 
 \begin{lemma}\label{mul_expand₃}
   \lean{mul_expand₃}
+  \leanok
   Formalize the polynomial expansion of the product \(\prod_{i=0}^{n-1} (1 - g(i))\).
 \end{lemma}
 
 \begin{lemma}\label{mul_expand₂}
   \lean{mul_expand₂}
+  \leanok
   \uses{Finset.powerset₀,mul_expand₃}
   Formalize the polynomial expansion of \(1 - \prod_{i=0}^{n-1} (1 - g(i))\).
 \end{lemma}
 
 \begin{lemma}\label{mul_expand₁}
   \lean{mul_expand₁}
+  \leanok
   \uses{Finset.powerset₀,mul_expand₂}
   Formalize the polynomial expansion of \(1 - \prod_{i=0}^{n-1} (1 - g(i))\) in the context of finite sets of natural numbers up to \verb|n|.
 \end{lemma}
@@ -185,8 +242,20 @@
 \begin{lemma}\label{card_eq_sum_char_fun}
   \lean{card_eq_sum_char_fun}
   \uses{toInt,char_fun,card_eq}
+  \leanok
   The cardinality of a subset \verb|B| of \verb|A| is equal to the sum of the characteristic function of \verb|B| over \verb|A|.
 \end{lemma}
+
+\begin{proof}
+  \leanok
+  The right-hand side of the equation is equivalent to the number of elements in the intersection of sets $A$ and $B$. The left-hand side of the equation represents the number of elements in set $B$. Since $B$ is a subset of $A$, the intersection of $A$ and $B$ is equal to $B$. Therefore, the equality holds.
+
+  Mathematically, this can be stated as:
+  \begin{equation*}
+  |B| = |A \cap B|
+  \end{equation*}
+  given that $B \subseteq A$.
+\end{proof}
 
 \begin{lemma}\label{card_eq_FinInter}
   \lean{card_eq_FinInter}
@@ -203,8 +272,34 @@
 \begin{lemma}\label{char_fun_FinInter}
   \lean{char_fun_FinInter}
   \uses{FinInter₀,eq_FinInter₀,toInt,char_fun}
+  \leanok
   The characteristic function of the intersection of a family of finite sets indexed by \verb|β| is equal to the product of their characteristic functions.
 \end{lemma}
+
+\begin{proof}
+  \leanok
+  Let $\mathcal{F} = \{A_1, A_2, \ldots, A_n\}$ be a collection of sets and let $B = \bigcap_{A \in \mathcal{F}} A$ be the intersection of these sets. Consider the characteristic function $\chi_B(x)$ for any element $x$. We wish to establish the following equivalence:
+
+  \begin{equation*}
+  \chi_B(x) = \prod_{A \in \mathcal{F}} \chi_A(x)
+  \end{equation*}
+
+  We analyze two cases:
+
+  Case 1: $x$ belongs to the intersection $B$
+
+  \textbf{Left Hand Side (LHS):} $\chi_B(x) = 1$. This condition is equivalent to $x$ belonging to every set $A \in \mathcal{F}$.
+
+  \textbf{Right Hand Side (RHS):} The product becomes $\prod_{A \in \mathcal{F}} \chi_A(x) = \prod_{A \in \mathcal{F}} 1 = 1$. Therefore, LHS = RHS.
+
+  Case 2: $x$ does not belong to the intersection $B$
+
+  \textbf{Left Hand Side (LHS):} $\chi_B(x) = 0$. This is equivalent to the existence of a set $A \in \mathcal{F}$ such that $x \not\in A$.
+
+  \textbf{Right Hand Side (RHS):} There exists an $A \in \mathcal{F}$ for which $\chi_A(x) = 0$. Since the product involves a zero, $\prod_{A \in \mathcal{F}} \chi_A(x) = 0$. Thus, LHS = RHS.
+  In conclusion, for any element $x$, we have $\chi_B(x) = \prod_{A \in \mathcal{F}} \chi_A(x)$, which completes the proof.
+
+\end{proof}
 
 \begin{lemma}\label{char_fun_FinUnion}
   \lean{char_fun_FinUnion}
@@ -215,8 +310,18 @@
 \begin{lemma}\label{mul_expand₀}
   \lean{mul_expand₀}
   \uses{Finset.powerset₀,mul_expand₁}
+  \leanok
   The polynomial expansion of \(1 - \prod_{i=0}^{n-1} (1 - g(i))\).
 \end{lemma}
+
+\begin{proof}
+  \leanok
+  We construct a function \( g' : \mathbb{N} \to \mathbb{Z} \). When x < n, g'(x) is defined as g(x), when x >= n ,g'(x) is defined ad 0.
+
+  Since we only use the x < n part of g(x) in the statement, it is obvious that we can change g to g' in the statement.
+
+  Now the statement is completely the same as \ref{mul_expand₁}. 
+\end{proof}
 
 \begin{theorem}\label{Principle_of_Inclusion_Exclusion}
   \lean{Principle_of_Inclusion_Exclusion}
