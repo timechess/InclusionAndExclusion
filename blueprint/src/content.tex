@@ -212,22 +212,26 @@
 
 \begin{lemma}\label{card_eq}
   \lean{card_eq}
+  \leanok
   If a finite set \verb|A| is equal to a set \verb|B| in the sense of set theory, then they have the same number of elements.
 \end{lemma}
 
 \begin{lemma}\label{mul_expand₃}
   \lean{mul_expand₃}
+  \leanok
   Formalize the polynomial expansion of the product \(\prod_{i=0}^{n-1} (1 - g(i))\).
 \end{lemma}
 
 \begin{lemma}\label{mul_expand₂}
   \lean{mul_expand₂}
+  \leanok
   \uses{Finset.powerset₀,mul_expand₃}
   Formalize the polynomial expansion of \(1 - \prod_{i=0}^{n-1} (1 - g(i))\).
 \end{lemma}
 
 \begin{lemma}\label{mul_expand₁}
   \lean{mul_expand₁}
+  \leanok
   \uses{Finset.powerset₀,mul_expand₂}
   Formalize the polynomial expansion of \(1 - \prod_{i=0}^{n-1} (1 - g(i))\) in the context of finite sets of natural numbers up to \verb|n|.
 \end{lemma}
@@ -316,7 +320,7 @@
 
   Since we only use the x < n part of g(x) in the statement, it is obvious that we can change g to g' in the statement.
 
-  Now the statement is completely the same as mul_expand1. 
+  Now the statement is completely the same as \ref{mul_expand₁}. 
 \end{proof}
 
 \begin{theorem}\label{Principle_of_Inclusion_Exclusion}
