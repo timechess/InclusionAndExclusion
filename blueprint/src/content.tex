@@ -306,8 +306,18 @@
 \begin{lemma}\label{mul_expand₀}
   \lean{mul_expand₀}
   \uses{Finset.powerset₀,mul_expand₁}
+  \leanok
   The polynomial expansion of \(1 - \prod_{i=0}^{n-1} (1 - g(i))\).
 \end{lemma}
+
+\begin{proof}
+  \leanok
+  We construct a function \( g' : \mathbb{N} \to \mathbb{Z} \). When x < n, g'(x) is defined as g(x), when x >= n ,g'(x) is defined ad 0.
+
+  Since we only use the x < n part of g(x) in the statement, it is obvious that we can change g to g' in the statement.
+
+  Now the statement is completely the same as mul_expand1. 
+\end{proof}
 
 \begin{theorem}\label{Principle_of_Inclusion_Exclusion}
   \lean{Principle_of_Inclusion_Exclusion}
