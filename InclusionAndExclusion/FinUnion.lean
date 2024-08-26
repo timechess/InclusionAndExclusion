@@ -7,17 +7,11 @@ import InclusionAndExclusion.Auxiliary
 
 open BigOperators
 
-
-/--X_i , β , A , ⋃ X_i-/
 /-- Given finite number of finite sets, List.FinInter returns their union using an inductive way -/
 def List.FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α)(L : List β) : Finset α :=
   match L with
   | [] => ∅
   | x :: xs => A x ∪ (xs.FinUnion A)
-
-lemma mem_union_left_not_right (α : Type) (s t : Finset α) (x: α) : x ∈ s ∪ t  → x ∉ S → x ∈ T :=by
-  sorry
-
 /-- Forall x of type α, x in (List.FinUnion A L) if and only if there exists an i in L, such that x in (A i) -/
 lemma List.eq_FinUnion {α β : Type*} [DecidableEq α] [Fintype β] (A : β → Finset α)(L : List β) : ∀ x : α, x ∈ L.FinUnion A ↔ ∃ i ∈ L, x ∈ A i :=
   match L with
