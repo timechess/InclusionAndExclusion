@@ -2,8 +2,6 @@ import Mathlib.Analysis.Normed.Field.Basic
 import Mathlib.Data.Finset.Fin
 import Mathlib.Data.Int.Star
 import Mathlib.Data.Multiset.Fintype
-import InclusionAndExclusion.FinInter
-import InclusionAndExclusion.FinUnion
 
 -- Thank 王镜廷 of PKU for providing the proof of this theorem
 open BigOperators
