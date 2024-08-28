@@ -17,6 +17,26 @@
 
 \section{Introduction}
 
+Our principle goal is to proof the statement of Principle of Inclusion-Exclusion.
+
+\textbf{Theorem 1: The Principle of Inclusion-Exclusion}
+
+    Given a family of sets $(A_{i}),i \in \{1,2,\dots ,n\}$, we have:
+
+    \[
+  \text{card} \left( \bigcup_{i=1}^n A(i) \right) = \sum_{S \subseteq \{1, \ldots, n\}} (-1)^{|S|+1} \cdot \text{card} \left( \bigcap_{i \in S} A(i) \right).
+  \]
+
+
+To proof this theorem, we divided the goal into several parts:
+
+\begin{itemize}
+  \item FinInter
+  \item FinUnion
+  \item ToInt
+  \item Auxiliary
+  \item MainTheorem
+\end{itemize}
 
 \section{FinInter}
 
@@ -134,6 +154,7 @@
 
 \begin{lemma}\label{List.eq_FinUnion}
   \lean{List.eq_FinUnion}
+  \leanok
   \uses{List.FinUnion}
   Prove that an element is in the union of a list of finite sets if and only if it is in at least one of the sets.
 \end{lemma}
@@ -145,12 +166,14 @@
 
 \begin{definition}\label{Multiset.FinUnion}
   \lean{Multiset.FinUnion}
+  \leanok
   \uses{List.FinUnion,List.eq_FinUnion}
   Define the union of a multiset of finite sets indexed by \verb|β|, where each set is given by a function \verb|A : β → Finset α|.
 \end{definition}
 
 \begin{lemma}\label{Multiset.eq_FinUnion}
   \lean{Multiset.eq_FinUnion}
+  \leanok
   \uses{List.FinUnion,List.eq_FinUnion,Multiset.FinUnion}
   Prove that an element is in the union of a multiset of finite sets if and only if it is in at least one of the sets.
 \end{lemma}
@@ -162,12 +185,14 @@
 
 \begin{definition}\label{FinUnion₀}
   \lean{FinUnion₀}
+  \leanok
   \uses{Multiset.FinUnion}
   Define the union of all finite sets indexed by \verb|β|, where each set is given by a function \verb|A : β → Finset α|.
 \end{definition}
 
 \begin{lemma}\label{eq_FinUnion₀}
   \lean{eq_FinUnion₀}
+  \leanok
   \uses{Multiset.eq_FinUnion,FinUnion₀}
   Prove that the union of all finite sets indexed by \verb|β| is equal to the union of their corresponding sets in \verb|Set α|.
 \end{lemma}
@@ -215,12 +240,18 @@
 
 \begin{lemma}\label{char_fun_inter}
   \lean{char_fun_inter}
+  \leanok
   \uses{toInt,toInt_and,char_fun}
   The characteristic function of the intersection of two finite sets \verb|A| and \verb|B| is equal to the product of their characteristic functions.
 \end{lemma}
 
+\begin{proof}
+  \leanok
+\end{proof}
+
 \begin{lemma}\label{char_fun_union}
   \lean{char_fun_union}
+  \leanok
   \uses{toInt,toInt_and,toInt_not,char_fun}
   The characteristic function of the union of two finite sets \verb|A| and \verb|B| is equal to 1 minus the product of 1 minus their characteristic functions.
 \end{lemma}
@@ -251,12 +282,18 @@ On the other hand, for any element inside the union \(A\), it belongs to at leas
   \leanok
   If a finite set \verb|A| is equal to a set \verb|B| in the sense of set theory, then they have the same number of elements.
 \end{lemma}
+\begin{proof}
+  \leanok
+\end{proof}
 
 \begin{lemma}\label{mul_expand₃}
   \lean{mul_expand₃}
   \leanok
   Formalize the polynomial expansion of the product \(\prod_{i=0}^{n-1} (1 - g(i))\).
 \end{lemma}
+\begin{proof}
+  \leanok
+\end{proof}
 
 \begin{lemma}\label{mul_expand₂}
   \lean{mul_expand₂}
@@ -264,6 +301,10 @@ On the other hand, for any element inside the union \(A\), it belongs to at leas
   \uses{Finset.powerset₀,mul_expand₃}
   Formalize the polynomial expansion of \(1 - \prod_{i=0}^{n-1} (1 - g(i))\).
 \end{lemma}
+\begin{proof}
+  \leanok
+\end{proof}
+
 
 \begin{lemma}\label{mul_expand₁}
   \lean{mul_expand₁}
@@ -271,6 +312,9 @@ On the other hand, for any element inside the union \(A\), it belongs to at leas
   \uses{Finset.powerset₀,mul_expand₂}
   Formalize the polynomial expansion of \(1 - \prod_{i=0}^{n-1} (1 - g(i))\) in the context of finite sets of natural numbers up to \verb|n|.
 \end{lemma}
+\begin{proof}
+  \leanok
+\end{proof}
 
 
 \section{MainTheorem}
@@ -295,15 +339,23 @@ On the other hand, for any element inside the union \(A\), it belongs to at leas
 
 \begin{lemma}\label{card_eq_FinInter}
   \lean{card_eq_FinInter}
+  \leanok
   \uses{FinInter₀,eq_FinInter₀,card_eq}
   The cardinality of the intersection of a family of finite sets indexed by \verb|β| is equal to the cardinality of their intersection in \verb|Finset| form.
 \end{lemma}
 
+\begin{proof}
+  \leanok
+\end{proof}
+
+
 \begin{lemma}\label{card_eq_FinUnion}
   \lean{card_eq_FinUnion}
+  \leanok
   \uses{card_eq,FinUnion₀,eq_FinUnion₀}
   The cardinality of the union of a family of finite sets indexed by \verb|β| is equal to the cardinality of their union in \verb|Finset| form.
 \end{lemma}
+
 
 \begin{proof}
     \leanok
@@ -351,6 +403,7 @@ Thus, regardless of whether an element belongs to a single set or appears in mul
 
 \begin{lemma}\label{char_fun_FinUnion}
   \lean{char_fun_FinUnion}
+  \leanok
   \uses{FinUnion₀,eq_FinUnion₀,toInt,char_fun}
   The characteristic function of the union of a family of finite sets indexed by \verb|β| is equal to 1 minus the product of 1 minus their characteristic functions.
 \end{lemma}
@@ -402,7 +455,7 @@ With this analysis, we have proven the theorem.
   \[
   \text{card} \left( \bigcup_{i=1}^n A(i) \right) = \sum_{S \subseteq \{1, \ldots, n\}} (-1)^{|S|} \cdot \text{card} \left( \bigcap_{i \in S} A(i) \right).
   \]
-  
+
   \begin{enumerate}
     \item \textbf{Definitions:}
     \begin{itemize}
