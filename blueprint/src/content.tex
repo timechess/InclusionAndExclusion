@@ -110,15 +110,15 @@
 \begin{proof}
   \leanok
   By definition, \ref{FinInter₀} is the intersection of a universal multiset of finite sets.
-  
+
   Two sets $A,B$ are equal means for any $x$, $x\in A$ iff $x\in B$.
-  
+
   Using \ref{Multiset.eq_FinInter}, we have for any $m$ in the universal multiset, $x∈A_m$, and the right side is for any $i$ indexed by $β$, $x∈A_i$, which are equivalent.
-  
+
   But \ref{Multiset.eq_FinInter} requires that the universal multiset is not empty.
-  
+
   By the property of the universal multiset, we have for any $t$ indexed by $β$, $t$ is in the universal multiset.
-  
+
   If the universal multiset is empty, then we have a contradiction.
 
   Thus, the statement holds.
@@ -138,6 +138,11 @@
   Prove that an element is in the union of a list of finite sets if and only if it is in at least one of the sets.
 \end{lemma}
 
+\begin{proof}
+  \leanok
+  Consider that we define union of sets by induction , we enumeration pointer until a set contain the element.So obviously ,they are same.
+\end{proof}
+
 \begin{definition}\label{Multiset.FinUnion}
   \lean{Multiset.FinUnion}
   \uses{List.FinUnion,List.eq_FinUnion}
@@ -149,6 +154,11 @@
   \uses{List.FinUnion,List.eq_FinUnion,Multiset.FinUnion}
   Prove that an element is in the union of a multiset of finite sets if and only if it is in at least one of the sets.
 \end{lemma}
+
+\begin{proof}
+  \leanok
+  Multiset just have some repeat element. So it's also obviously when \ref{List.eq_FinUnion} is right
+\end{proof}
 
 \begin{definition}\label{FinUnion₀}
   \lean{FinUnion₀}
@@ -162,6 +172,10 @@
   Prove that the union of all finite sets indexed by \verb|β| is equal to the union of their corresponding sets in \verb|Set α|.
 \end{lemma}
 
+\begin{proof}
+    \leanok
+    It's also really obviously when \ref{Multiset.eq_FinUnion} is right.
+\end{proof}
 \section{ToInt}
 
 \begin{definition}\label{toInt}
@@ -210,6 +224,20 @@
   \uses{toInt,toInt_and,toInt_not,char_fun}
   The characteristic function of the union of two finite sets \verb|A| and \verb|B| is equal to 1 minus the product of 1 minus their characteristic functions.
 \end{lemma}
+
+\begin{proof}
+    \leanok
+
+Consider a family of finite sets \(\{A_\beta\}\) indexed by \(\beta\), and let the union of these sets be \(A = \bigcup_\beta A_\beta\). The characteristic function \(\chi_{A_\beta}\) takes the value 1 for elements in \(A_\beta\) and 0 for elements outside.
+
+For the characteristic function \(\chi_A\) of the union \(A\), it takes the value 1 for any element in \(\bigcup_\beta A_\beta\) and 0 for elements outside the union. Our goal is to show that \(\chi_A = 1 - \prod_\beta (1 - \chi_{A_\beta})\).
+
+Let's reason as follows: for any element outside the union \(A\), it is not in any of the \(A_\beta\), so \(\chi_{A_\beta}(x) = 0\) for every \(\beta\), making \((1 - \chi_{A_\beta}(x)) = 1\). Therefore, the product \(\prod_\beta (1 - \chi_{A_\beta}(x)) = 1\), and thus \(1 - \prod_\beta (1 - \chi_{A_\beta}(x)) = 0\), matching the value of \(\chi_A\) outside the union.
+
+On the other hand, for any element inside the union \(A\), it belongs to at least one set \(A_\beta\). This means there exists at least one \(\beta\) such that \(\chi_{A_\beta}(x) = 1\). Consequently, there is at least one \((1 - \chi_{A_\beta}(x)) = 0\). The product \(\prod_\beta (1 - \chi_{A_\beta}(x))\) hits zero as soon as the first zero is encountered, and thus \(1 - \prod_\beta (1 - \chi_{A_\beta}(x)) = 1\), matching the value of \(\chi_A\) inside the union.。
+
+\end{proof}
+
 \section{Auxiliary}
 
 \begin{definition}\label{Finset.powerset₀}
@@ -277,6 +305,18 @@
   The cardinality of the union of a family of finite sets indexed by \verb|β| is equal to the cardinality of their union in \verb|Finset| form.
 \end{lemma}
 
+\begin{proof}
+    \leanok
+The cardinality of the union of a family of finite sets indexed by \(\beta\) is equal to the cardinality of their union in \(\text{Finset}\) form. Here, the characteristic function represents the size of the set. Let's provide a proof in plain language.
+
+Consider a family of finite sets \(\{A_\beta\}\) indexed by \(\beta\), and let the union of these sets be \(A = \bigcup_\beta A_\beta\). We represent the union of these sets in \(\text{Finset}\) form, ensuring that all set elements are unique. In \(\text{Finset}\) form, the cardinality of a set is simply the number of elements in the set.
+
+To show that the cardinality of \(A\) is equal to the cardinality of the union in \(\text{Finset}\) form, we compare the elements in both sets. Any element in \(A\) must belong to at least one set \(A_\beta\). Since \(\text{Finset}\) guarantees the uniqueness of elements, this means that in the union in \(\text{Finset}\) form, each element also occurs exactly once.
+
+Thus, regardless of whether an element belongs to a single set or appears in multiple sets, as long as it is in the union \(A\), it will also appear once in the union in \(\text{Finset}\) form. This ensures that the cardinality of \(A\) is precisely equal to the cardinality of the union in \(\text{Finset}\) form.
+
+\end{proof}
+
 \begin{lemma}\label{char_fun_FinInter}
   \lean{char_fun_FinInter}
   \uses{FinInter₀,eq_FinInter₀,toInt,char_fun}
@@ -315,6 +355,23 @@
   The characteristic function of the union of a family of finite sets indexed by \verb|β| is equal to 1 minus the product of 1 minus their characteristic functions.
 \end{lemma}
 
+\begin{proof}
+  \leanok
+The characteristic function of the union of a family of finite sets indexed by \(\beta\) is equal to 1 minus the product of 1 minus their characteristic functions. Let's prove this theorem using plain language.
+
+Suppose we have a family of finite sets indexed by \(\beta\), denoted as \(\{A_\beta\}\), and consider the union of these sets, \(A = \bigcup_\beta A_\beta\). The characteristic function \(\chi_{A_\beta}\) defines a function for each set \(\beta\), being 1 for any element in \(A_\beta\) and 0 for any element not in the set.
+
+Now, consider the characteristic function \(\chi_A\) of the union \(A\), which also follows the rule: 1 for elements in \(A\) and 0 for elements not in \(A\).
+
+To prove that \(\chi_A = 1 - \prod_\beta (1 - \chi_{A_\beta})\), we consider two scenarios:
+
+1. **Elements not in the union** (\(x \not\in A\)): If an element is not in \(A\), it means it is not in any \(A_\beta\). Thus, for every characteristic function \(\chi_{A_\beta}\) of a set \(A_\beta\), the value of the function for that element is 0. Hence, \(1 - \chi_{A_\beta} = 1\). Since the element is not in any \(A_\beta\), \(\prod_\beta (1 - \chi_{A_\beta}) = 1\), and thus \(1 - \prod_\beta (1 - \chi_{A_\beta}) = 0\), which aligns with the definition of the characteristic function \(\chi_A\) (value 0 for elements not in the union).
+
+2. **Elements in the union** (\(x \in A\)): If an element is in \(A\), the element is in at least one \(A_\beta\). This means there is at least one \(\beta\) for which \(\chi_{A_\beta} = 1\). Thus, there is at least one \(1 - \chi_{A_\beta} = 0\). The product \(\prod_\beta (1 - \chi_{A_\beta})\) will be zero due to encountering at least one 0, leading to \(1 - \prod_\beta (1 - \chi_{A_\beta}) = 1\). This also aligns with the definition of the characteristic function \(\chi_A\) (value 1 for elements in the union).
+
+With this analysis, we have proven the theorem.
+\end{proof}
+
 \begin{lemma}\label{mul_expand₀}
   \lean{mul_expand₀}
   \uses{Finset.powerset₀,mul_expand₁}
@@ -328,7 +385,7 @@
 
   Since we only use the x < n part of g(x) in the statement, it is obvious that we can change g to g' in the statement.
 
-  Now the statement is completely the same as \ref{mul_expand₁}. 
+  Now the statement is completely the same as \ref{mul_expand₁}.
 \end{proof}
 
 \begin{theorem}\label{Principle_of_Inclusion_Exclusion}
