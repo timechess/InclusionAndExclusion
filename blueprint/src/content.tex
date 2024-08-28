@@ -110,15 +110,15 @@
 \begin{proof}
   \leanok
   By definition, \ref{FinInter₀} is the intersection of a universal multiset of finite sets.
-  
+
   Two sets $A,B$ are equal means for any $x$, $x\in A$ iff $x\in B$.
-  
+
   Using \ref{Multiset.eq_FinInter}, we have for any $m$ in the universal multiset, $x∈A_m$, and the right side is for any $i$ indexed by $β$, $x∈A_i$, which are equivalent.
-  
+
   But \ref{Multiset.eq_FinInter} requires that the universal multiset is not empty.
-  
+
   By the property of the universal multiset, we have for any $t$ indexed by $β$, $t$ is in the universal multiset.
-  
+
   If the universal multiset is empty, then we have a contradiction.
 
   Thus, the statement holds.
@@ -138,7 +138,7 @@
   Prove that an element is in the union of a list of finite sets if and only if it is in at least one of the sets.
 \end{lemma}
 
-\begin{proof} 
+\begin{proof}
   \leanok
   Consider that we define union of sets by induction , we enumeration pointer until a set contain the element.So obviously ,they are same.
 \end{proof}
@@ -155,9 +155,9 @@
   Prove that an element is in the union of a multiset of finite sets if and only if it is in at least one of the sets.
 \end{lemma}
 
-\begin{proof} 
+\begin{proof}
   \leanok
-  Multiset just have some repeat element. So it's also obviously when List.eq_FinUnion is right
+  Multiset just have some repeat element. So it's also obviously when \ref{List.eq_FinUnion} is right
 \end{proof}
 
 \begin{definition}\label{FinUnion₀}
@@ -174,7 +174,7 @@
 
 \begin{proof}
     \leanok
-    It's also really obviously when Multiset.eq_FinUnion is right.
+    It's also really obviously when \ref{Multiset.eq_FinUnion} is right.
 \end{proof}
 \section{ToInt}
 
@@ -385,7 +385,7 @@ With this analysis, we have proven the theorem.
 
   Since we only use the x < n part of g(x) in the statement, it is obvious that we can change g to g' in the statement.
 
-  Now the statement is completely the same as \ref{mul_expand₁}. 
+  Now the statement is completely the same as \ref{mul_expand₁}.
 \end{proof}
 
 \begin{theorem}\label{Principle_of_Inclusion_Exclusion}
